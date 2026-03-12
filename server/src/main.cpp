@@ -1,4 +1,5 @@
 #include <ctime>
+#include <SDL2/SDL_main.h>
 #include <asio.hpp>
 #include "log.hpp"
 #include "argf.hpp"

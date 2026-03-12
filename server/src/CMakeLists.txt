@@ -22,6 +22,7 @@ TARGET_LINK_LIBRARIES(server ${G3LOG_LIBRARIES}    )
 TARGET_LINK_LIBRARIES(server ${LZ4_LIBRARIES}      )
 TARGET_LINK_LIBRARIES(server ${ZSTD_LIBRARIES}     )
 TARGET_LINK_LIBRARIES(server Threads::Threads      )
+TARGET_LINK_LIBRARIES(server -static-libstdc++     )
 
 IF(WIN32 AND MSVC)
     MESSAGE(STATUS "Use windows native fiber library")
@@ -38,11 +39,14 @@ if(WIN32)
             NO_WINSOCK
             WIN32_LEAN_AND_MEAN
     )
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
 endif()
 
 if(WIN32)
-    target_link_libraries(server ws2_32 dbghelp SDL2::SDL2main)
+    target_link_libraries(server ws2_32 dbghelp ${SDL2_LIBRARIES})
 endif()
+
+print_target_link_libraries(server)
 
 INSTALL(TARGETS server DESTINATION server)
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/server/script DESTINATION server)

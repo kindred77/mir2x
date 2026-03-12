@@ -37,29 +37,6 @@ TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #LINK_DIRECTORIES(${LIBPINYIN_LIBRARY_DIRS})
 #INCLUDE_DIRECTORIES(SYSTEM ${LIBPINYIN_INCLUDE_DIRS})
 
-function(print_target_link_libraries target_name)
-    # 检查目标是否存在
-    if(NOT TARGET ${target_name})
-        message(WARNING "目标 ${target_name} 不存在！")
-        return()
-    endif()
-
-    # 获取目标的 LINK_LIBRARIES 属性（所有链接的库）
-    get_target_property(link_libs ${target_name} LINK_LIBRARIES)
-
-    # 打印结果
-    message(STATUS "===== 目标 ${target_name} 的链接库列表 =====")
-    if(link_libs)
-        # 循环打印每个库名（处理列表为空的情况）
-        foreach(lib ${link_libs})
-            message(STATUS "链接库：${lib}")
-        endforeach()
-    else()
-        message(STATUS "该目标未链接任何库")
-    endif()
-    message(STATUS "==========================================")
-endfunction()
-
 TARGET_LINK_LIBRARIES(client
     ${G3LOG_LIBRARIES}
     ${TINYXML2_LIBRARIES}
@@ -78,9 +55,12 @@ TARGET_LINK_LIBRARIES(client
     ${ZSTD_LIBRARIES}
 #    ${LIBPINYIN_LIBRARIES}
 
-    Threads::Threads)
+    Threads::Threads
+    -static-libstdc++
+)
 
 TARGET_LINK_LIBRARIES(client
+        ${SDL2_LIBRARIES}
         $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
         SDL2::SDL2_gfx
         $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
@@ -89,14 +69,15 @@ TARGET_LINK_LIBRARIES(client
 
 IF(WIN32)
 #    TARGET_LINK_LIBRARIES(client SDL2::SDL2main SDL2::SDL2-static)
-    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
+#    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
     TARGET_LINK_LIBRARIES(client ${FREETYPE_LIBRARIES})
 ELSE()
-    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
+#    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
 ENDIF()
 
 if(WIN32)
     target_link_libraries(client ws2_32 dbghelp)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
 endif()
 
 print_target_link_libraries(client)

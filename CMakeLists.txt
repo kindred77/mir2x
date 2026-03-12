@@ -261,6 +261,29 @@ FIND_PACKAGE(Threads REQUIRED)
 
 SET(CMAKE_SKIP_RPATH TRUE)
 
+function(print_target_link_libraries target_name)
+    # 检查目标是否存在
+    if(NOT TARGET ${target_name})
+        message(WARNING "目标 ${target_name} 不存在！")
+        return()
+    endif()
+
+    # 获取目标的 LINK_LIBRARIES 属性（所有链接的库）
+    get_target_property(link_libs ${target_name} LINK_LIBRARIES)
+
+    # 打印结果
+    message(STATUS "===== 目标 ${target_name} 的链接库列表 =====")
+    if(link_libs)
+        # 循环打印每个库名（处理列表为空的情况）
+        foreach(lib ${link_libs})
+            message(STATUS "链接库：${lib}")
+        endforeach()
+    else()
+        message(STATUS "该目标未链接任何库")
+    endif()
+    message(STATUS "==========================================")
+endfunction()
+
 ADD_SUBDIRECTORY(common)
 ADD_SUBDIRECTORY(server)
 ADD_SUBDIRECTORY(client)

@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <SDL2/SDL_main.h>
 #include "log.hpp"
 #include "client.hpp"
 #include "pngtexdb.hpp"
