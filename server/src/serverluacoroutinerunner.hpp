@@ -272,26 +272,6 @@ class ServerLuaCoroutineRunner: public ServerLuaModule
         void resumeRunner(LuaThreadHandle *, std::optional<std::pair<std::string, luaf::luaVar>> = {});
 
     private:
-        static std::string concatCode(const std::string &code)
-        {
-            // exception thrown eventually feeds to FLTK
-            // FLTK error message window doesn't accept multiline string
-
-            std::string line;
-            std::string codeStr;
-            std::stringstream ss(code);
-
-            while(std::getline(ss, line, '\n')){
-                if(!codeStr.empty()){
-                    codeStr += "\\n";
-                }
-                codeStr += line;
-            }
-
-            return codeStr;
-        }
-
-    private:
         template<typename Lambda, typename... Args> static std::tuple<Args...> _extractLambdaUserArgsHelper(corof::awaitable<> (*)(Lambda, LuaCoopResumer, Args...));
         template<typename Lambda, typename... Args> static std::tuple<Args...> _extractLambdaUserArgsHelper(corof::awaitable<> (*)(Lambda, LuaCoopResumer, LuaCoopState, Args...));
 

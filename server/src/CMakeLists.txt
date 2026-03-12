@@ -29,6 +29,17 @@ ELSE()
     TARGET_LINK_LIBRARIES(server ${ACO_LIBRARIES})
 ENDIF()
 
+if(WIN32)
+    target_compile_definitions(server PRIVATE
+            # 适配 Windows 7 及以上（最常用，兼容绝大多数场景）
+            _WIN32_WINNT=0x0601
+            # 可选：补充定义，避免重复警告
+            _WIN32_WINDOWS=0x0601
+            NO_WINSOCK
+            WIN32_LEAN_AND_MEAN
+    )
+endif()
+
 INSTALL(TARGETS server DESTINATION server)
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/server/script DESTINATION server)
 INSTALL(DIRECTORY ${MIR2X_DATA_REPO_PATH}/res/map DESTINATION server)

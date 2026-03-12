@@ -47,6 +47,25 @@ void LuaCoopResumer::resumeYieldedRunner(ServerLuaCoroutineRunner *luaRunner, vo
     }
 }
 
+std::string concatCode(const std::string &code)
+{
+    // exception thrown eventually feeds to FLTK
+    // FLTK error message window doesn't accept multiline string
+
+    std::string line;
+    std::string codeStr;
+    std::stringstream ss(code);
+
+    while(std::getline(ss, line, '\n')){
+        if(!codeStr.empty()){
+            codeStr += "\\n";
+        }
+        codeStr += line;
+    }
+
+    return codeStr;
+}
+
 ServerLuaCoroutineRunner::ServerLuaCoroutineRunner(ActorPod *podPtr)
     : ServerLuaModule()
     , m_actorPod([podPtr]()

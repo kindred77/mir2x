@@ -10,3 +10,14 @@ vcpkg install sdl2-gfx --triplet x64-mingw-static
 vcpkg install sdl2-mixer --triplet x64-mingw-static
 1、%zu改成%llu
 2、lua不用vcpkg安装的，有版本要求
+
+编译server:
+
+添加fltk的fluid工具到环境变量，
+参考路径：c:\mywork\projects\cpp\vcpkg\installed\x64-mingw-static\tools\fltk
+
+FL.H会引入windows.h，再配合asio.h使用会有冲突，使用cmake添加宏可解决：
+NO_WINSOCK
+WIN32_LEAN_AND_MEAN
+
+serverluacoroutinerunner.cpp中使用类私有解态函数concatCode会导致gcc bug崩溃，把这个函数从类中提取出来解决。
