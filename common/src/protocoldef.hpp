@@ -413,7 +413,7 @@ enum BlockPlayerResultType: int
 
 enum ChatPeerType: int
 {
-    CP_NONE    = 0,
+    CP_NONE_VAL    = 0,
     CP_BEGIN   = 1,
     CP_SPECIAL = 1,
     CP_PLAYER,

@@ -2,6 +2,10 @@
 #include "fflerror.hpp"
 #include "raiitimer.hpp"
 
+#if defined(_WIN32) || defined(_WIN64)
+#   define OS_WINDOWS 1
+#endif
+
 // for QueryPerformanceFrequency(), the doc suggests to cache the result:
 // https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 
@@ -54,9 +58,17 @@ uint64_t hres_tstamp::localtime()
     }
 
     struct tm buf;
+#ifdef OS_WINDOWS
+    errno_t err = localtime_s(&buf, &ts.tv_sec);
+    if(err != 0) [[unlikely]] {
+        throw fflerror("localtime_s(%llu, %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
+    }
+#else
     if(localtime_r(&ts.tv_sec, &buf) != &buf) [[unlikely]] {
         throw fflerror("localtime_r(%llu, %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
     }
+#endif
+
 
     const uint64_t year        = buf.tm_year + 1900;
     const uint64_t month       = buf.tm_mon  +    1;

@@ -244,7 +244,7 @@ void XMLParagraph::deleteToken(int leafIndex, int leafOff, int tokenCount)
 std::tuple<int, int, int> XMLParagraph::prevLeafOff(int leafIndex, int leafOff, int) const
 {
     if(leafOff >= to_d(leaf(leafIndex).utf8CharOff().size())){
-        throw fflerror("the %d-th leaf has only %zu tokens", leafIndex, leaf(leafIndex).utf8CharOff().size());
+        throw fflerror("the %d-th leaf has only %llu tokens", leafIndex, leaf(leafIndex).utf8CharOff().size());
     }
 
     return {0, 0, 0};

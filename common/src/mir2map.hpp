@@ -425,11 +425,11 @@ class Mir2Map final
             }
 
             return str_printf(
-                    "width : %zu\n"
-                    "height: %zu\n"
-                    "light : %zu\n"
-                    "door  : %zu\n"
-                    "alpha : %zu\n"
-                    "ani   : %zu\n", w(), h(), lightCount, doorCount, alphaCount, aniCount);
+                    "width : %llu\n"
+                    "height: %llu\n"
+                    "light : %llu\n"
+                    "door  : %llu\n"
+                    "alpha : %llu\n"
+                    "ani   : %llu\n", w(), h(), lightCount, doorCount, alphaCount, aniCount);
         }
 };

@@ -119,7 +119,7 @@ ChatItemContainer::ChatItemContainer(
           .bgDrawFunc = [this](int startDstX, int startDstY)
           {
               const auto roi = nomsg.roi(this);
-              g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
+              g_sdlDevice->fillRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64),
                       startDstX + roi.x - ChatItemContainer::BACKGROUND_MARGIN,
                       startDstY + roi.y - ChatItemContainer::BACKGROUND_MARGIN,
                       roi.w + ChatItemContainer::BACKGROUND_MARGIN * 2,
@@ -139,7 +139,7 @@ ChatItemContainer::ChatItemContainer(
 
           .bgDrawFunc = [this](const Widget *, int startDstX, int startDstY)
           {
-              g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64),
+              g_sdlDevice->fillRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64),
                       startDstX - ChatItemContainer::BACKGROUND_MARGIN,
                       startDstY - ChatItemContainer::BACKGROUND_MARGIN,
                       ops.w() + ChatItemContainer::BACKGROUND_MARGIN * 2,

@@ -828,7 +828,7 @@ void ActorPool::launchPool()
     const auto logicalFPS = g_serverArgParser->sharedConfig().logicalFPS;
 
     g_server->addLog(LOGTYPE_INFO, "Logical FPS: %d", logicalFPS);
-    g_server->addLog(LOGTYPE_INFO, "Launch actor pool with %zu thread", m_bucketList.size());
+    g_server->addLog(LOGTYPE_INFO, "Launch actor pool with %llu thread", m_bucketList.size());
 
     for(int bucketId = 0; bucketId < to_d(m_bucketList.size()); ++bucketId){
         m_bucketList.at(bucketId).runThread = std::async(std::launch::async, [bucketId, logicalFPS, this]()

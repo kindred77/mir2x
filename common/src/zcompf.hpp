@@ -17,7 +17,7 @@ namespace zcompf
     {
         static_assert(std::is_trivially_copyable_v<T>);
         if(!(src && srcSize)){
-            throw fflerror("invalid argument: src = %p, srcSize = %zu", src, srcSize);
+            throw fflerror("invalid argument: src = %p, srcSize = %llu", src, srcSize);
         }
 
         const int maxDstSize = LZ4_compressBound(srcSize * sizeof(T));
@@ -41,7 +41,7 @@ namespace zcompf
         static_assert(std::is_trivially_copyable_v<VALUE_TYPE>);
 
         if(!(maxDstSize && src && srcSize)){
-            throw fflerror("invalid argument: maxDstSize = %zu, src = %p, srcSize = %zu", maxDstSize, src, srcSize);
+            throw fflerror("invalid argument: maxDstSize = %llu, src = %p, srcSize = %llu", maxDstSize, src, srcSize);
         }
 
         dst.clear();
@@ -53,7 +53,7 @@ namespace zcompf
         }
 
         if(decompSize % sizeof(VALUE_TYPE)){
-            throw fflerror("decompressed data buffer is not aligned by class value type: size = %zu, sizeof(value_type) = %zu", decompSize, sizeof(VALUE_TYPE));
+            throw fflerror("decompressed data buffer is not aligned by class value type: size = %llu, sizeof(value_type) = %llu", decompSize, sizeof(VALUE_TYPE));
         }
         dst.resize(decompSize / sizeof(VALUE_TYPE));
     }
@@ -63,7 +63,7 @@ namespace zcompf
     {
         static_assert(std::is_trivially_copyable_v<T>);
         if(!(src && srcSize)){
-            throw fflerror("invalid argument: src = %p, srcSize = %zu", src, srcSize);
+            throw fflerror("invalid argument: src = %p, srcSize = %llu", src, srcSize);
         }
 
         dst.clear();
@@ -85,7 +85,7 @@ namespace zcompf
             case ZSTD_CONTENTSIZE_ERROR:
             case ZSTD_CONTENTSIZE_UNKNOWN:
                 {
-                    throw fflerror("not a zstd compressed data buffer: src = %p, srcSize = %zu", src, srcSize);
+                    throw fflerror("not a zstd compressed data buffer: src = %p, srcSize = %llu", src, srcSize);
                 }
             default:
                 {
@@ -100,7 +100,7 @@ namespace zcompf
         }
 
         if(rc % sizeof(VALUE_TYPE)){
-            throw fflerror("decompressed data buffer is not aligned by class value type: size = %zu, sizeof(value_type) = %zu", rc, sizeof(VALUE_TYPE));
+            throw fflerror("decompressed data buffer is not aligned by class value type: size = %llu, sizeof(value_type) = %llu", rc, sizeof(VALUE_TYPE));
         }
         dst.resize(rc / sizeof(VALUE_TYPE));
     }

@@ -1688,7 +1688,7 @@ std::tuple<int, int> ProcessRun::getRandLoc(uint32_t reqMapID, size_t tryCount)
         }
     }
 
-    throw fflerror("can not find a valid location on mapID %llu by %zu tries", to_llu(reqMapID), tryCount);
+    throw fflerror("can not find a valid location on mapID %llu by %llu tries", to_llu(reqMapID), tryCount);
 }
 
 bool ProcessRun::requestSpaceMove(uint64_t nMapUID, int nX, int nY)
@@ -1768,7 +1768,7 @@ void ProcessRun::requestLatestChatMessage(const std::vector<uint64_t> &cpids, si
     std::memset(&cmRLCM, 0, sizeof(cmRLCM));
 
     if(cpids.size() > cmRLCM.cpidList.capacity()){
-        throw fflerror("query of %zu cpids exceeds capacity %zu", cpids.size(), cmRLCM.cpidList.capacity());
+        throw fflerror("query of %llu cpids exceeds capacity %llu", cpids.size(), cmRLCM.cpidList.capacity());
     }
 
     for(const auto &cpid: cpids){
@@ -2444,7 +2444,7 @@ void ProcessRun::requestBuy(uint64_t npcUID, uint32_t itemID, uint32_t seqID, si
     }));
 
     if(count <= 0){
-        throw fflerror("invalid buy count: %zu", count);
+        throw fflerror("invalid buy count: %llu", count);
     }
 
     CMBuy cmB;

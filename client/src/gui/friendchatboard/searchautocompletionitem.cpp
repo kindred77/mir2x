@@ -48,12 +48,12 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
           .drawFunc = [this](const Widget *, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{roi()}}.in(SDLDeviceHelper::getMousePLoc())){
-                  g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
-                  g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->fillRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->drawRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
               else{
                   g_sdlDevice->fillRectangle(colorf::GREY               + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
-                  g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(32), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->drawRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(32), drawDstX, drawDstY, w(), h());
               }
           },
 

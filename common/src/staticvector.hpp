@@ -65,7 +65,7 @@ template<conceptf::TriviallyCopyable T, size_t Capacity> struct StaticVector
         }
 
         else if((size_t)(inputsize) > capacity()){
-            throw fflerror("size of range %zu exceeds capacity %zu", (size_t)(inputsize), capacity());
+            throw fflerror("size of range %lu exceeds capacity %lu", (unsigned long)(inputsize), (unsigned long)capacity());
         }
         else{
             size = inputsize;

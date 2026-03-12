@@ -60,11 +60,11 @@ FriendItem::FriendItem(
           .drawFunc = [this](const Widget *self, int drawDstX, int drawDstY)
           {
               if(Widget::ROIMap{.x=drawDstX, .y=drawDstY, .ro{self->roi()}}.in(SDLDeviceHelper::getMousePLoc())){
-                  g_sdlDevice->fillRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
-                  g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->fillRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->drawRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(64), drawDstX, drawDstY, w(), h());
               }
               else{
-                  g_sdlDevice->drawRectangle(colorf::RGB(231, 231, 189) + colorf::A_SHF(32), drawDstX, drawDstY, w(), h());
+                  g_sdlDevice->drawRectangle(colorf::makeRGB(231, 231, 189) + colorf::A_SHF(32), drawDstX, drawDstY, w(), h());
               }
           },
 

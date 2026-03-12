@@ -1,0 +1,12 @@
+gcc15.2-mingw, vcpkg
+-DCMAKE_TOOLCHAIN_FILE=c:/mywork/projects/cpp/vcpkg/scripts/buildsystems/vcpkg.cmake
+-DVCPKG_TARGET_TRIPLET=x64-mingw-static
+安装:
+vcpkg install fltk --triplet x64-mingw-static
+vcpkg install sdl2 --triplet x64-mingw-static
+vcpkg install sdl2-image --triplet x64-mingw-static
+vcpkg install sdl2-ttf --triplet x64-mingw-static
+vcpkg install sdl2-gfx --triplet x64-mingw-static
+vcpkg install sdl2-mixer --triplet x64-mingw-static
+1、%zu改成%llu
+2、lua不用vcpkg安装的，有版本要求

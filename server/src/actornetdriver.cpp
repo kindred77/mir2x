@@ -138,7 +138,7 @@ asio::awaitable<void> ActorNetDriver::listener()
             );
 
             auto peer = slotPtr->peer.get();
-            g_server->addLog(LOGTYPE_INFO, "Server peer %zu has connected to master", m_peerSlotList.size() - 1);
+            g_server->addLog(LOGTYPE_INFO, "Server peer %llu has connected to master", m_peerSlotList.size() - 1);
 
             peer->launch();
             postPeer(m_peerSlotList.size() - 1, ActorMsgBuf(AM_SYS_PEERINDEX, cerealf::serialize(SDSysPeerIndex
@@ -309,13 +309,13 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
             {
                 const auto sdPI = mpk.deserialize<SDSysPeerIndex>();
                 if(m_peerIndex.has_value()){
-                    throw fflerror("invalid request to reassign peer %zu to index %zu", m_peerIndex.value(), sdPI.index);
+                    throw fflerror("invalid request to reassign peer %llu to index %llu", m_peerIndex.value(), sdPI.index);
                 }
 
                 m_peerIndex = sdPI.index;
                 g_serverArgParser->setSharedConfig(cerealf::deserialize<ServerArgParser::MasterSharedConfig>(sdPI.masterConfig));
 
-                g_server->addLog(LOGTYPE_INFO, "Assign peer index %zu", m_peerIndex.value());
+                g_server->addLog(LOGTYPE_INFO, "Assign peer index %llu", m_peerIndex.value());
                 return;
             }
         case AM_SYS_SLAVEPEERPORT:
@@ -343,7 +343,7 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
                         m_remotePeerList[peerIndex] = addr;
                     }
                     else if(p->second != addr){
-                        throw fflerror("peer %zu address has been changed", peerIndex);
+                        throw fflerror("peer %llu address has been changed", peerIndex);
                     }
 
                     if(peerIndex >= m_peerIndex.value()){
@@ -385,7 +385,7 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
             }
         case AM_SYS_LAUNCHED:
             {
-                g_server->addLog(LOGTYPE_INFO, "Slave server %zu has been launched", fromPeerIndex);
+                g_server->addLog(LOGTYPE_INFO, "Slave server %llu has been launched", fromPeerIndex);
                 m_launchedCount++;
 
                 if(m_launchedCount >= peerCount()){

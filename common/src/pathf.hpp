@@ -8,6 +8,7 @@
 #include <optional>
 #include <algorithm>
 #include <functional>
+#include <cfloat>
 
 #include "mathf.hpp"
 #include "totype.hpp"

@@ -91,7 +91,11 @@
 #include <numeric>
 #include <filesystem>
 #include <chrono>
-#include <ctime>
+#include <time.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+#   define OS_WINDOWS 1
+#endif
 
 #ifdef __GNUC__
     #define STR_PRINTF_CHECK_FORMAT(n) __attribute__ ((format (printf, (n), ((n)+1))))
@@ -106,8 +110,15 @@ inline std::string str_now(const char *format = nullptr)
 
     struct tm now_time;
     std::stringstream ss;
-
+#ifdef OS_WINDOWS
+    // Windows 平台
+    [[maybe_unused]] errno_t err = localtime_s(&now_time, &in_time);
+    ss << std::put_time(&now_time, format ? format : "%Y-%m-%d %X");
+#else
+    // POSIX 平台（Linux/macOS/MSYS2）
     ss << std::put_time(localtime_r(&in_time, &now_time), format ? format : "%Y-%m-%d %X");
+#endif
+
     return ss.str();
 }
 
@@ -473,7 +484,11 @@ template<typename... Ts> std::string str_any(const std::variant<Ts...> &v)
 // definition of BOOST_CURRENT_FUNCTION
 
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600))
-    #define str_ffl() str_printf("In file: %s:%d, function: %s", std::filesystem::path(__FILE__).filename().c_str(), __LINE__, __PRETTY_FUNCTION__)
+#ifdef OS_WINDOWS
+    #define str_ffl() str_printf("In file: %ls:%d, function: %s", std::filesystem::path(__FILE__).filename().c_str(), __LINE__, __PRETTY_FUNCTION__)
+#else
+#define str_ffl() str_printf("In file: %s:%d, function: %s", std::filesystem::path(__FILE__).filename().c_str(), __LINE__, __PRETTY_FUNCTION__)
+#endif
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
     #define str_ffl() str_printf("In file: %s:%d, function: %s", std::filesystem::path(__FILE__).filename().c_str(), __LINE__, __PRETTY_FUNCTION__)
 #elif defined(__FUNCSIG__)

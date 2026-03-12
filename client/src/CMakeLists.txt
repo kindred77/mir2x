@@ -22,7 +22,7 @@ ADD_DEPENDENCIES(client mir2x_3rds)
 #
 #     $ env PKG_CONFIG_PATH=<your-libpinyin-install-path/lib/pkgconfig>:${PKG_CONFIG_PATH} cmake ../mir2x ...
 
-PKG_CHECK_MODULES(LIBPINYIN REQUIRED libpinyin)
+#PKG_CHECK_MODULES(LIBPINYIN REQUIRED libpinyin)
 TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${MIR2X_COMMON_SOURCE_DIR})
 TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -34,8 +34,31 @@ TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 #     TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${T_SUBDIR})
 # ENDFOREACH()
 
-LINK_DIRECTORIES(${LIBPINYIN_LIBRARY_DIRS})
-INCLUDE_DIRECTORIES(SYSTEM ${LIBPINYIN_INCLUDE_DIRS})
+#LINK_DIRECTORIES(${LIBPINYIN_LIBRARY_DIRS})
+#INCLUDE_DIRECTORIES(SYSTEM ${LIBPINYIN_INCLUDE_DIRS})
+
+function(print_target_link_libraries target_name)
+    # 检查目标是否存在
+    if(NOT TARGET ${target_name})
+        message(WARNING "目标 ${target_name} 不存在！")
+        return()
+    endif()
+
+    # 获取目标的 LINK_LIBRARIES 属性（所有链接的库）
+    get_target_property(link_libs ${target_name} LINK_LIBRARIES)
+
+    # 打印结果
+    message(STATUS "===== 目标 ${target_name} 的链接库列表 =====")
+    if(link_libs)
+        # 循环打印每个库名（处理列表为空的情况）
+        foreach(lib ${link_libs})
+            message(STATUS "链接库：${lib}")
+        endforeach()
+    else()
+        message(STATUS "该目标未链接任何库")
+    endif()
+    message(STATUS "==========================================")
+endfunction()
 
 TARGET_LINK_LIBRARIES(client
     ${G3LOG_LIBRARIES}
@@ -44,26 +67,40 @@ TARGET_LINK_LIBRARIES(client
 
     common
 
-    SDL2_ttf
-    SDL2_gfx
-    SDL2_image
-    SDL2_mixer
+#    SDL2_ttf
+#    SDL2_gfx
+#    SDL2_image
+#    SDL2_mixer
 
     ${LUA_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${LZ4_LIBRARIES}
     ${ZSTD_LIBRARIES}
-    ${LIBPINYIN_LIBRARIES}
+#    ${LIBPINYIN_LIBRARIES}
 
     Threads::Threads)
 
+TARGET_LINK_LIBRARIES(client
+        $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+        SDL2::SDL2_gfx
+        $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+        $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
+)
+
 IF(WIN32)
-    TARGET_LINK_LIBRARIES(client SDL2::SDL2main SDL2::SDL2-static)
+#    TARGET_LINK_LIBRARIES(client SDL2::SDL2main SDL2::SDL2-static)
+    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
     TARGET_LINK_LIBRARIES(client ${FREETYPE_LIBRARIES})
 ELSE()
     TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
 ENDIF()
 
+if(WIN32)
+    target_link_libraries(client ws2_32 dbghelp)
+endif()
+
+print_target_link_libraries(client)
+
 INSTALL(TARGETS client DESTINATION client)
-INSTALL(DIRECTORY ${LIBPINYIN_LIBDIR}/libpinyin DESTINATION client)
+#INSTALL(DIRECTORY ${LIBPINYIN_LIBDIR}/libpinyin DESTINATION client)
 INSTALL(DIRECTORY ${MIR2X_DATA_REPO_PATH}/res DESTINATION client)

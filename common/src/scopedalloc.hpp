@@ -9,6 +9,11 @@
 #include <stdexcept>
 #include "fflerror.hpp"
 
+#if defined(_WIN32) || defined(_WIN64)
+#   define OS_WINDOWS 1
+#include <malloc.h>
+#endif
+
 #define SCOPED_ALLOC_THROW_OVERLIVE
 #define SCOPED_ALLOC_SUPPORT_OVERALIGN
 
@@ -18,7 +23,11 @@
 
 // use posix_memalign()
 // aligned_alloc is not standardized for compiler with c++14
+#if OS_WINDOWS
+#else
 #define SCOPED_ALLOC_USE_POSIX_MEMALIGN
+#endif
+
 
 namespace scoped_alloc
 {
@@ -75,13 +84,21 @@ namespace scoped_alloc
         if(!posix_memalign(&aligned_ptr, Alignment, byte_count_aligned)){
             return {static_cast<char *>(aligned_ptr), byte_count_aligned};
         }
-        throw fflerror("posix_memalign(..., alignment = %zu, byte_count = %zu, byte_count_aligned = %zu) failed", Alignment, byte_count, byte_count_aligned);
+        throw fflerror("posix_memalign(..., alignment = %llu, byte_count = %llu, byte_count_aligned = %llu) failed", Alignment, byte_count, byte_count_aligned);
+#else
+#if OS_WINDOWS
+        aligned_ptr = _aligned_malloc(byte_count_aligned, Alignment);
+        if(aligned_ptr){
+            return {static_cast<char *>(aligned_ptr), byte_count_aligned};
+        }
+        throw fflerror("_aligned_malloc(alignment = %llu, byte_count = %llu, byte_count_aligned = %llu) failed", Alignment, byte_count, byte_count_aligned);
 #else
         aligned_ptr = aligned_alloc(Alignment, byte_count_aligned);
         if(aligned_ptr){
             return {static_cast<char *>(aligned_ptr), byte_count_aligned};
         }
-        throw fflerror("aligned_alloc(alignment = %zu, byte_count = %zu, byte_count_aligned = %zu) failed", Alignment, byte_count, byte_count_aligned);
+        throw fflerror("aligned_alloc(alignment = %llu, byte_count = %llu, byte_count_aligned = %llu) failed", Alignment, byte_count, byte_count_aligned);
+#endif
 #endif
     }
 
@@ -847,7 +864,7 @@ namespace scoped_alloc
                     const auto found = std::lower_bound(prime_table, prime_table_end, (unsigned long long)(n));
 
                     if(found == prime_table_end){
-                        throw fflerror("invalid size to reserve: %zu", n);
+                        throw fflerror("invalid size to reserve: %llu", n);
                     }
                     return (size_t)(*found);
                 }();

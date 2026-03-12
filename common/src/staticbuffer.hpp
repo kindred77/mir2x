@@ -36,11 +36,11 @@ template<size_t Capacity> struct StaticBuffer
     {
         if(length > 0){
             if(!data){
-                throw fflerror("null data pointer while data length is non-zero: %zu", length);
+                throw fflerror("null data pointer while data length is non-zero: %llu", length);
             }
 
             if(length > capacity()){
-                throw fflerror("data length %zu exceeds buffer capacity: %zu", length, capacity());
+                throw fflerror("data length %llu exceeds buffer capacity: %llu", length, capacity());
             }
 
             std::memcpy(this->data, data, length);

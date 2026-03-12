@@ -447,7 +447,7 @@ SDLDevice::SDLDevice()
 #endif
 
         if(Mix_AllocateChannels(m_channelCount) != to_d(m_channelCount)){
-            throw fflerror("failed to allocate %zu channels: %s", m_channelCount, Mix_GetError());
+            throw fflerror("failed to allocate %llu channels: %s", m_channelCount, Mix_GetError());
         }
 
         for(int channel = 0; channel < to_d(m_channelCount); ++channel){

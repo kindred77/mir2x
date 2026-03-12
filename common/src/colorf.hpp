@@ -31,7 +31,7 @@ namespace colorf
         return R_SHF(r) | G_SHF(g) | B_SHF(b) | A_SHF(a);
     }
 
-    constexpr uint32_t RGB(uint8_t r, uint8_t g, uint8_t b)
+    constexpr uint32_t makeRGB(uint8_t r, uint8_t g, uint8_t b)
     {
         return R_SHF(r) | G_SHF(g) | B_SHF(b);
     }
@@ -59,25 +59,25 @@ namespace colorf
         return RGBA(round255(fr * 255.0), round255(fg * 255.0), round255(fb * 255.0), round255(fa * 255.0));
     }
 
-    constexpr uint32_t RED   = RGB(0XFF, 0X00, 0X00);
-    constexpr uint32_t GREEN = RGB(0X00, 0XFF, 0X00);
-    constexpr uint32_t BLUE  = RGB(0X00, 0X00, 0XFF);
+    constexpr uint32_t RED   = makeRGB(0XFF, 0X00, 0X00);
+    constexpr uint32_t GREEN = makeRGB(0X00, 0XFF, 0X00);
+    constexpr uint32_t BLUE  = makeRGB(0X00, 0X00, 0XFF);
 
     constexpr uint32_t   RED_A255 =   RED + A_SHF(255);
     constexpr uint32_t GREEN_A255 = GREEN + A_SHF(255);
     constexpr uint32_t  BLUE_A255 =  BLUE + A_SHF(255);
 
-    constexpr uint32_t YELLOW  = RGB(0XFF, 0XFF, 0X00);
-    constexpr uint32_t CYAN    = RGB(0X00, 0XFF, 0XFF);
-    constexpr uint32_t MAGENTA = RGB(0XFF, 0X00, 0XFF);
+    constexpr uint32_t YELLOW  = makeRGB(0XFF, 0XFF, 0X00);
+    constexpr uint32_t CYAN    = makeRGB(0X00, 0XFF, 0XFF);
+    constexpr uint32_t MAGENTA = makeRGB(0XFF, 0X00, 0XFF);
 
     constexpr uint32_t  YELLOW_A255 =  YELLOW + A_SHF(255);
     constexpr uint32_t    CYAN_A255 =    CYAN + A_SHF(255);
     constexpr uint32_t MAGENTA_A255 = MAGENTA + A_SHF(255);
 
-    constexpr uint32_t BLACK   = RGB(0X00, 0X00, 0X00);
-    constexpr uint32_t GREY    = RGB(0X80, 0X80, 0X80);
-    constexpr uint32_t WHITE   = RGB(0XFF, 0XFF, 0XFF);
+    constexpr uint32_t BLACK   = makeRGB(0X00, 0X00, 0X00);
+    constexpr uint32_t GREY    = makeRGB(0X80, 0X80, 0X80);
+    constexpr uint32_t WHITE   = makeRGB(0XFF, 0XFF, 0XFF);
 
     constexpr uint32_t BLACK_A255 = BLACK + A_SHF(255);
     constexpr uint32_t  GREY_A255 =  GREY + A_SHF(255);

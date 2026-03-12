@@ -30,8 +30,8 @@ class WidgetTreeNode // tree concept, used by class Widget only
         };
 
     private:
-        template<typename IN, typename OUT_1, typename OUT_2> using check_const_cond_t         = std::conditional_t<std::is_const_v<std::remove_reference_t<IN>>, OUT_1, OUT_2>;
-        template<typename IN, typename OUT                  > using check_const_cond_out_ptr_t = check_const_cond_t<IN, const OUT *, OUT *>;
+        template<typename IN_1, typename OUT_1, typename OUT_2> using check_const_cond_t         = std::conditional_t<std::is_const_v<std::remove_reference_t<IN_1>>, OUT_1, OUT_2>;
+        template<typename IN_1, typename OUT_1                > using check_const_cond_out_ptr_t = check_const_cond_t<IN_1, const OUT_1 *, OUT_1 *>;
 
     private:
         template<typename T> using VarTypeHelperBase = std::variant<
@@ -276,7 +276,7 @@ class Widget: public WidgetTreeNode
                     case 1 : return self.down;
                     case 2 : return self.left;
                     case 3 : return self.right;
-                    default: throw fflerror("invalid margin index: %zu", i);
+                    default: throw fflerror("invalid margin index: %llu", i);
                 }
             }
         };

@@ -48,7 +48,7 @@ std::u8string SDItem::getXMLLayout(const std::unordered_map<int, std::string> & 
                 return "white";
             }
         }();
-        xmlStr += str_printf(u8R"###( <par>【持久】<t color='%s'>%zu/%zu/%d</t></par> )###""\n", duraColorStr, duration[0], duration[1], ir.equip.duration);
+        xmlStr += str_printf(u8R"###( <par>【持久】<t color='%s'>%llu/%llu/%d</t></par> )###""\n", duraColorStr, duration[0], duration[1], ir.equip.duration);
     }
 
     xmlStr += str_printf(u8R"###( <par></par> )###""\n");

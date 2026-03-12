@@ -9,10 +9,10 @@ INCLUDE(ExternalProject)
 ExternalProject_Add(
     mir2x_data
 
-    GIT_REPOSITORY "https://github.com/etorth/mir2x_data.git"
-    GIT_TAG        "main"
+#    GIT_REPOSITORY "https://github.com/kindred77/mir2x_data.git"
+#    GIT_TAG        "main"
 
-    SOURCE_DIR "${MIR2X_3RD_PARTY_DIR}/mir2x_data"
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../mir2x_data"
 
     UPDATE_COMMAND ""
     PATCH_COMMAND ""

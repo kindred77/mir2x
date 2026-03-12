@@ -1,3 +1,4 @@
+#include "localspeakboard.hpp"
 #include "strf.hpp"
 #include "mathf.hpp"
 #include "totype.hpp"

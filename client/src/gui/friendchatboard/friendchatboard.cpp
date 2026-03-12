@@ -651,7 +651,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                                   }
 
                                   if(dbidList.size() > CMCreateChatGroup().list.capacity()){
-                                      throw fflerror("selected too many friends, max %zu", CMCreateChatGroup().list.capacity());
+                                      throw fflerror("selected too many friends, max %llu", CMCreateChatGroup().list.capacity());
                                   }
 
                                   auto inputBoardPtr = dynamic_cast<InputStringBoard *>(m_processRun->getWidget("InputStringBoard"));
@@ -1219,7 +1219,7 @@ void FriendChatBoard::finishMessagePending(size_t localPendingID, const SDChatMe
         addMessage(localPendingID, chatMessage);
     }
     else{
-        throw fflerror("invalid local pending message id: %zu", localPendingID);
+        throw fflerror("invalid local pending message id: %lu", (unsigned long)localPendingID);
     }
 }
 

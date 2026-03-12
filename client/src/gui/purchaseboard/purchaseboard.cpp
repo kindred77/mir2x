@@ -556,7 +556,7 @@ void PurchaseBoard::drawExt1(Widget::ROIMap m) const
     }
 
     if(m_ext1Page >= ext1PageCount){
-        throw fflerror("invalid ext1Page: ext1Page = %d, listSize = %zu", m_ext1Page, m_sdSellItemList.list.size());
+        throw fflerror("invalid ext1Page: ext1Page = %d, listSize = %llu", m_ext1Page, m_sdSellItemList.list.size());
     }
 
     const auto remapX = m.x - m.ro->x;

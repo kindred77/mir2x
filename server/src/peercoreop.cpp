@@ -55,6 +55,6 @@ corof::awaitable<> PeerCore::on_AM_PEERLOADMAP(const ActorMsgPack &mpk)
     loadMapSg.dismiss();
 
     if(newLoad){
-        g_server->addLog(LOGTYPE_INFO, "Load map %d on peer %zu successfully", to_d(uidf::getMapID(amPLM.mapUID)), uidf::peerIndex(UID()));
+        g_server->addLog(LOGTYPE_INFO, "Load map %d on peer %llu successfully", to_d(uidf::getMapID(amPLM.mapUID)), uidf::peerIndex(UID()));
     }
 }

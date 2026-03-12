@@ -2,19 +2,19 @@
 #include <cstring>
 #include <string>
 #include <stdexcept>
-#include <execinfo.h>
+//#include <execinfo.h>
 #include "strf.hpp"
 
 #define fflerror(...) std::runtime_error(str_ffl() + ": " + str_printf(__VA_ARGS__))
 
 inline std::string _fflerror_helper(size_t index)
 {
-    return str_printf("[%zu]: NA", index);
+    return str_printf("[%llu]: NA", index);
 }
 
 template<typename T> std::string _fflerror_helper(size_t index, const T & t)
 {
-    return str_printf("[%zu]: %s", index, str_any(t).c_str());
+    return str_printf("[%llu]: %s", index, str_any(t).c_str());
 }
 
 template<typename T, typename ... Args> std::string _fflerror_helper(size_t index, const T & t, Args && ... args)

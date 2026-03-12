@@ -3,10 +3,15 @@ INCLUDE(ExternalProject)
 # for the CMAKE_ARGS, the author recommends -DCPACK_PACKAGING_INSTALL_PREFIX=xxx
 # but seems on windows this doesn't work
 
+IF(WIN32 AND MSVC OR CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
+    MESSAGE(STATUS "png build skipped on windows platform, use vcpkg")
+    RETURN()
+ENDIF()
+
 ExternalProject_Add(
     zlib
 
-    URL "https://www.zlib.net/zlib-1.3.1.tar.gz"
+    URL "https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz"
     DOWNLOAD_NAME "zlib"
     DOWNLOAD_EXTRACT_TIMESTAMP 0
 

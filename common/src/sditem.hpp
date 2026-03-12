@@ -132,7 +132,10 @@ struct SDItem
 
     std::string str() const
     {
-        return str_printf("(name, itemID, seqID, count, duration) = (%s, %zu, %zu, %zu, (%zu, %zu))", to_cstr(DBCOM_ITEMRECORD(itemID).name), to_uz(itemID), to_uz(seqID), count, duration[0], duration[1]);
+        return str_printf("(name, itemID, seqID, count, duration) = (%s, %llu, %llu, %llu, (%llu, %llu))",
+            to_cstr(DBCOM_ITEMRECORD(itemID).name),
+            to_uz(itemID), to_uz(seqID),
+            count, duration[0], duration[1]);
     }
 
     std::u8string getXMLLayout(const std::unordered_map<int, std::string> & = {}) const;

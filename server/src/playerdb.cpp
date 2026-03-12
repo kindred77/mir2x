@@ -464,7 +464,7 @@ void Player::dbLoadBelt()
     while(query.executeStep()){
         const auto index = check_cast<size_t, unsigned>(query.getColumn("fld_belt"));
         if(index >= 6){
-            throw fflerror("invalid belt slot: %zu", index);
+            throw fflerror("invalid belt slot: %llu", index);
         }
 
         const auto itemID = check_cast<uint32_t, unsigned>(query.getColumn("fld_itemid"));
@@ -489,7 +489,7 @@ void Player::dbLoadBelt()
 void Player::dbUpdateBeltItem(size_t slot, const SDItem &item)
 {
     if(slot >= 6){
-        throw fflerror("invalid belt slot: %zu", slot);
+        throw fflerror("invalid belt slot: %lu", (unsigned long)slot);
     }
 
     fflassert(item);
@@ -514,9 +514,9 @@ void Player::dbUpdateBeltItem(size_t slot, const SDItem &item)
 void Player::dbRemoveBeltItem(size_t slot)
 {
     if(slot >= 6){
-        throw fflerror("invalid belt slot: %zu", slot);
+        throw fflerror("invalid belt slot: %llu", slot);
     }
-    g_dbPod->exec("delete from tbl_belt where fld_dbid = %llu and fld_belt = %zu", to_llu(dbid()), slot);
+    g_dbPod->exec("delete from tbl_belt where fld_dbid = %llu and fld_belt = %llu", to_llu(dbid()), slot);
 }
 
 void Player::dbLoadWear()
@@ -614,7 +614,7 @@ void Player::dbAddMagicExp(uint32_t magicID, size_t exp)
 {
     fflassert(DBCOM_MAGICRECORD(magicID));
     if(exp > 0){
-        g_dbPod->exec("update tbl_learnedmagiclist set fld_exp = fld_exp + %llu where fld_dbid = %llu and fld_magic = %zu", to_llu(dbid()), to_llu(magicID), exp);
+        g_dbPod->exec("update tbl_learnedmagiclist set fld_exp = fld_exp + %llu where fld_dbid = %llu and fld_magic = %llu", to_llu(dbid()), to_llu(magicID), exp);
     }
 }
 
@@ -741,7 +741,7 @@ SDChatMessageList Player::dbRetrieveLatestChatMessage(const std::span<const uint
         queries.back().append("order by fld_timestamp desc ");
 
         if(limitPerID > 0){
-            queries.back().append(str_printf("limit %zu ", limitPerID));
+            queries.back().append(str_printf("limit %llu ", limitPerID));
         }
 
         queries.back().append(" )");

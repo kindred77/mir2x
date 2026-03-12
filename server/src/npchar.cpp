@@ -103,7 +103,7 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %zu", args.size());
+                        throw fflerror("invalid argument count: %llu", args.size());
                     }
             }
         }();
@@ -142,7 +142,7 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %zu", args.size());
+                        throw fflerror("invalid argument count: %llu", args.size());
                     }
             }
         }();

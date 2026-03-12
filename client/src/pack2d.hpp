@@ -119,7 +119,7 @@ class Pack2D
         void validCEx(int x, int y, int argW, int argH) const
         {
             if(!validC(x, y, argW, argH)){
-                throw fflerror("invalid arguments: x = %d, y = %d, w = %d, h = %d, pack2D::w = %zu", x, y, argW, argH, w());
+                throw fflerror("invalid arguments: x = %d, y = %d, w = %d, h = %d, pack2D::w = %llu", x, y, argW, argH, w());
             }
         }
 };
