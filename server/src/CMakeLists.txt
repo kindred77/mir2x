@@ -40,6 +40,10 @@ if(WIN32)
     )
 endif()
 
+if(WIN32)
+    target_link_libraries(server ws2_32 dbghelp SDL2::SDL2main)
+endif()
+
 INSTALL(TARGETS server DESTINATION server)
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/server/script DESTINATION server)
 INSTALL(DIRECTORY ${MIR2X_DATA_REPO_PATH}/res/map DESTINATION server)
