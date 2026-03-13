@@ -61,11 +61,11 @@ uint64_t hres_tstamp::localtime()
 #ifdef OS_WINDOWS
     errno_t err = localtime_s(&buf, &ts.tv_sec);
     if(err != 0) [[unlikely]] {
-        throw fflerror("localtime_s(%llu, %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
+        throw fflerror("localtime_s(" MIR2_STR_FORMAT_SIZE_T ", %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
     }
 #else
     if(localtime_r(&ts.tv_sec, &buf) != &buf) [[unlikely]] {
-        throw fflerror("localtime_r(%llu, %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
+        throw fflerror("localtime_r(" MIR2_STR_FORMAT_SIZE_T ", %p) failed", to_llu(ts.tv_sec), to_cvptr(&buf));
     }
 #endif
 

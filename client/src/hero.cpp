@@ -1556,12 +1556,12 @@ bool Hero::setWLItem(int wltype, SDItem item, bool playSound)
     }
 
     if(!item){
-        throw fflerror("invalid itemID: %llu", to_llu(item.itemID));
+        throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(item.itemID));
     }
 
     const auto &ir = DBCOM_ITEMRECORD(item.itemID);
     if(!ir){
-        throw fflerror("invalid itemID: %llu", to_llu(item.itemID));
+        throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(item.itemID));
     }
 
     switch(wltype){

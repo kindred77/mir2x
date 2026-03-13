@@ -425,11 +425,11 @@ class Mir2Map final
             }
 
             return str_printf(
-                    "width : %llu\n"
-                    "height: %llu\n"
-                    "light : %llu\n"
-                    "door  : %llu\n"
-                    "alpha : %llu\n"
-                    "ani   : %llu\n", w(), h(), lightCount, doorCount, alphaCount, aniCount);
+                    "width : " MIR2_STR_FORMAT_SIZE_T "\n"
+                    "height: " MIR2_STR_FORMAT_SIZE_T "\n"
+                    "light : " MIR2_STR_FORMAT_SIZE_T "\n"
+                    "door  : " MIR2_STR_FORMAT_SIZE_T "\n"
+                    "alpha : " MIR2_STR_FORMAT_SIZE_T "\n"
+                    "ani   : " MIR2_STR_FORMAT_SIZE_T "\n", w(), h(), lightCount, doorCount, alphaCount, aniCount);
         }
 };

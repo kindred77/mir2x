@@ -103,7 +103,7 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %llu", args.size());
+                        throw fflerror("invalid argument count: " MIR2_STR_FORMAT_SIZE_T, args.size());
                     }
             }
         }();
@@ -142,7 +142,7 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %llu", args.size());
+                        throw fflerror("invalid argument count: " MIR2_STR_FORMAT_SIZE_T, args.size());
                     }
             }
         }();
@@ -246,13 +246,13 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
         }
 
         if(objType == "INTEGER"){
-            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values(%llu, %d) on conflict(fld_dbid) do update set %s=%d)###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<int>(), key.c_str(), obj.as<int>());
+            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, %d) on conflict(fld_dbid) do update set %s=%d)###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<int>(), key.c_str(), obj.as<int>());
         }
         else if(objType == "REAL"){
-            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values(%llu, %f) on conflict(fld_dbid) do update set %s=%f)###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<double>(), key.c_str(), obj.as<double>());
+            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, %f) on conflict(fld_dbid) do update set %s=%f)###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<double>(), key.c_str(), obj.as<double>());
         }
         else{
-            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values(%llu, '%s') on conflict(fld_dbid) do update set %s='%s')###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<std::string>().c_str(), key.c_str(), obj.as<std::string>().c_str());
+            g_dbPod->exec(u8R"###(insert into %s(fld_dbid, %s) values()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s') on conflict(fld_dbid) do update set %s='%s')###", npcDBName.c_str(), key.c_str(), to_llu(dbid), obj.as<std::string>().c_str(), key.c_str(), obj.as<std::string>().c_str());
         }
     });
 
@@ -267,7 +267,7 @@ NPChar::LuaThreadRunner::LuaThreadRunner(NPChar *npc)
             return sol::make_object(sv, sol::nil);
         }
 
-        auto queryStatement = g_dbPod->createQuery(u8R"###(select %s from %s where fld_dbid=%llu)###", key.c_str(), npcDBName.c_str(), to_llu(dbid));
+        auto queryStatement = g_dbPod->createQuery(u8R"###(select %s from %s where fld_dbid=)###" MIR2_STR_FORMAT_SIZE_T, key.c_str(), npcDBName.c_str(), to_llu(dbid));
         if(!queryStatement.executeStep()){
             return sol::make_object(sv, sol::nil);
         }
@@ -593,7 +593,7 @@ void NPChar::fillSellItemList()
     for(const uint32_t itemID: getSellList()){
         const auto &ir = DBCOM_ITEMRECORD(itemID);
         if(!ir){
-            throw fflerror("selling invalid item: itemID = %llu", to_llu(itemID));
+            throw fflerror("selling invalid item: itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
         }
 
         auto &itemListRef = m_sellItemList[itemID];

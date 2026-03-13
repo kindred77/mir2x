@@ -60,35 +60,35 @@ std::string uidf::getUIDString(uint64_t uid)
     switch(getUIDType(uid)){
         case UID_PLY:
             {
-                return str_printf("PLY_%llu", to_llu(uidf::getPlayerDBID(uid)));
+                return str_printf("PLY_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getPlayerDBID(uid)));
             }
         case UID_MON:
             {
-                return str_printf("MON_%llu_%llu_%llu", to_llu(uidf::getMonsterID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getMonsterSeq(uid, false)));
+                return str_printf("MON_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getMonsterID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getMonsterSeq(uid, false)));
             }
         case UID_NPC:
             {
-                return str_printf("NPC_%llu_%llu_%llu", to_llu(uidf::getNPCID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getNPCSeq(uid, false)));
+                return str_printf("NPC_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getNPCID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getNPCSeq(uid, false)));
             }
         case UID_MAP:
             {
-                return str_printf("MAP_%llu_%llu_%llu", to_llu(uidf::getMapID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getMapSeq(uid, false)));
+                return str_printf("MAP_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T "_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getMapID(uid)), to_llu(uidf::peerIndex(uid)), to_llu(uidf::getMapSeq(uid, false)));
             }
         case UID_COR:
             {
-                return str_printf("CORE_%llu", to_llu(uidf::peerIndex(uid)));
+                return str_printf("CORE_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::peerIndex(uid)));
             }
         case UID_RCV:
             {
-                return str_printf("RCV_%llu", to_llu(uidf::getReceiverSeq(uid)));
+                return str_printf("RCV_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getReceiverSeq(uid)));
             }
 	case UID_QST:
 	    {
-		return str_printf("QST_%llu", to_llu(uidf::getQuestID(uid)));
+		return str_printf("QST_" MIR2_STR_FORMAT_SIZE_T, to_llu(uidf::getQuestID(uid)));
 	    }
         default:
             {
-                return str_printf("ERR_%llu", to_llu(uid));
+                return str_printf("ERR_" MIR2_STR_FORMAT_SIZE_T, to_llu(uid));
             }
     }
 }

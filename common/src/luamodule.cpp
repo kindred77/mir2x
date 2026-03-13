@@ -198,7 +198,7 @@ LuaModule::LuaModule()
 
     bindFunction("debugAttach", [this]()
     {
-        addLogString(1, to_u8cstr(str_printf("Waiting for debugger to attach pid %llu", to_llu(getpid()))));
+        addLogString(1, to_u8cstr(str_printf("Waiting for debugger to attach pid " MIR2_STR_FORMAT_SIZE_T, to_llu(getpid()))));
     });
 
     bindFunction("addLogString", [this](sol::object logType, sol::object logInfo)

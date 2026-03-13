@@ -10,7 +10,7 @@ extern Server *g_server;
 luaf::luaVar Player::dbGetVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
+    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
 
     if(query.executeStep()){
         return cerealf::deserialize<luaf::luaVar>(query.getColumn(0).getString());
@@ -24,13 +24,13 @@ void Player::dbSetVar(const std::string &var, luaf::luaVar value)
 {
     fflassert(str_haschar(var));
     if(std::get_if<luaf::luaNil>(&value)){
-        g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s'", to_llu(dbid()), var.c_str());
+        g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s'", to_llu(dbid()), var.c_str());
     }
     else{
         auto query = g_dbPod->createQuery(
             u8R"###( insert into tbl_charvarlist(fld_dbid, fld_var, fld_value) )###"
             u8R"###( values                                                    )###"
-            u8R"###(     (%llu, '%s', ?)                                       )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s', ?)                                       )###"
             u8R"###(                                                           )###"
             u8R"###( on conflict(fld_dbid, fld_var) do                         )###"
             u8R"###( update set                                                )###"
@@ -48,7 +48,7 @@ void Player::dbSetVar(const std::string &var, luaf::luaVar value)
 std::pair<bool, luaf::luaVar> Player::dbHasVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
+    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
 
     if(query.executeStep()){
         return std::make_pair(true, cerealf::deserialize<luaf::luaVar>(query.getColumn(0).getString()));
@@ -61,24 +61,24 @@ std::pair<bool, luaf::luaVar> Player::dbHasVar(const std::string &var)
 void Player::dbRemoveVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s'", to_llu(dbid()), var.c_str());
+    g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s'", to_llu(dbid()), var.c_str());
 }
 
 void Player::dbUpdateExp()
 {
-    g_dbPod->exec(u8R"###( update tbl_char set fld_exp = %llu where fld_dbid = %llu )###", to_llu(exp()), to_llu(dbid()));
+    g_dbPod->exec(u8R"###( update tbl_char set fld_exp = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", to_llu(exp()), to_llu(dbid()));
 }
 
 void Player::dbUpdateMapGLoc()
 {
     if(uidf::isBaseMap(mapUID())){
-        g_dbPod->exec(u8R"###( update tbl_char set fld_map = %d, fld_mapx = %d, fld_mapy = %d where fld_dbid = %llu )###", to_d(mapID()), X(), Y(), to_llu(dbid()));
+        g_dbPod->exec(u8R"###( update tbl_char set fld_map = %d, fld_mapx = %d, fld_mapy = %d where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", to_d(mapID()), X(), Y(), to_llu(dbid()));
     }
 }
 
 void Player::dbUpdateHealth()
 {
-    g_dbPod->exec(u8R"###( update tbl_char set fld_hp = %d, fld_mp = %d where fld_dbid = %llu )###", m_sdHealth.hp, m_sdHealth.mp, to_llu(dbid()));
+    g_dbPod->exec(u8R"###( update tbl_char set fld_hp = %d, fld_mp = %d where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", m_sdHealth.hp, m_sdHealth.mp, to_llu(dbid()));
 }
 
 void Player::dbLoadInventory()
@@ -90,7 +90,7 @@ void Player::dbLoadInventory()
     // |<----primary key---->|
 
     m_sdItemStorage.inventory.clear();
-    auto query = g_dbPod->createQuery("select * from tbl_inventory where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_inventory where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         SDItem item
@@ -117,7 +117,7 @@ void Player::dbUpdateInventoryItem(const SDItem &item)
     auto query = g_dbPod->createQuery(
             u8R"###( replace into tbl_inventory(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
             u8R"###( values                                                                                                                 )###"
-            u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                            )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                            )###",
 
             to_llu(dbid()),
             to_llu(item.itemID),
@@ -141,9 +141,9 @@ void Player::dbRemoveInventoryItem(uint32_t itemID, uint32_t seqID)
     // means won't support remove more than 1 item in database per call
 
     if(!(DBCOM_ITEMRECORD(itemID) && seqID > 0)){
-        throw fflerror("invalid arguments: itemID = %llu, seqID = %llu", to_llu(itemID), to_llu(seqID));
+        throw fflerror("invalid arguments: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID), to_llu(seqID));
     }
-    g_dbPod->exec("delete from tbl_inventory where fld_dbid = %llu and fld_itemid = %llu and fld_seqid = %llu", to_llu(dbid()), to_llu(itemID), to_llu(seqID));
+    g_dbPod->exec("delete from tbl_inventory where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_itemid = " MIR2_STR_FORMAT_SIZE_T " and fld_seqid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()), to_llu(itemID), to_llu(seqID));
 }
 
 void Player::dbSecureItem(uint32_t itemID, uint32_t seqID)
@@ -154,7 +154,7 @@ void Player::dbSecureItem(uint32_t itemID, uint32_t seqID)
     auto query = g_dbPod->createQuery(
             u8R"###( replace into tbl_secureditemlist(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
             u8R"###( values                                                                                                                       )###"
-            u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                                  )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                                  )###",
 
             to_llu(dbid()),
             to_llu(item.itemID),
@@ -173,7 +173,7 @@ SDItem Player::dbRetrieveSecuredItem(uint32_t itemID, uint32_t seqID)
     fflassert(seqID > 0);
 
     auto query = g_dbPod->createQuery(
-            u8R"###( delete from tbl_secureditemlist where fld_dbid = %llu and fld_itemid = %llu and fld_seqid = %llu returning * )###",
+            u8R"###( delete from tbl_secureditemlist where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( and fld_itemid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( and fld_seqid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( returning * )###",
 
             to_llu(dbid()),
             to_llu(itemID),
@@ -197,7 +197,7 @@ SDItem Player::dbRetrieveSecuredItem(uint32_t itemID, uint32_t seqID)
         fflassert(!query.executeStep());
         return item;
     }
-    throw fflerror("can't find item: itemID = %llu, seqID = %llu", to_llu(itemID), to_llu(seqID));
+    throw fflerror("can't find item: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID), to_llu(seqID));
 }
 
 std::vector<SDItem> Player::dbLoadSecuredItemList() const
@@ -209,7 +209,7 @@ std::vector<SDItem> Player::dbLoadSecuredItemList() const
     // |<-----primary key----->|
 
     std::vector<SDItem> itemList;
-    auto query = g_dbPod->createQuery("select * from tbl_secureditemlist where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_secureditemlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         SDItem item
@@ -240,7 +240,7 @@ void Player::dbLoadPlayerConfig()
 
     m_sdPlayerConfig.magicKeyList.clear();
 
-    auto query = g_dbPod->createQuery("select * from tbl_playerconfig where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_playerconfig where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     if(query.executeStep()){
         if(const std::string buf = query.getColumn("fld_magickeylist"); !buf.empty()){
@@ -257,7 +257,7 @@ std::optional<SDChatPeer> Player::dbLoadChatPeer(uint64_t argCPID)
 {
     const SDChatPeerID sdCPID(argCPID);
     if(sdCPID.group()){
-        if(auto query = g_dbPod->createQuery("select * from tbl_chatgroup where fld_id = %llu", to_llu(sdCPID.id())); query.executeStep()){
+        if(auto query = g_dbPod->createQuery("select * from tbl_chatgroup where fld_id = " MIR2_STR_FORMAT_SIZE_T, to_llu(sdCPID.id())); query.executeStep()){
             return SDChatPeer
             {
                 .id = query.getColumn("fld_id"),
@@ -276,7 +276,7 @@ std::optional<SDChatPeer> Player::dbLoadChatPeer(uint64_t argCPID)
         }
     }
     else if(sdCPID.player()){
-        if(auto query = g_dbPod->createQuery("select * from tbl_char where fld_dbid = %llu", to_llu(sdCPID.id())); query.executeStep()){
+        if(auto query = g_dbPod->createQuery("select * from tbl_char where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(sdCPID.id())); query.executeStep()){
             return SDChatPeer
             {
                 .id = query.getColumn("fld_dbid"),
@@ -327,7 +327,7 @@ std::optional<SDChatPeer> Player::dbLoadChatPeer(uint64_t argCPID)
 
 std::optional<SDChatMessage> Player::dbQueryChatMessage(uint64_t argMsgID)
 {
-    if(auto query = g_dbPod->createQuery("select * from tbl_chatmessage where fld_id = %llu", to_llu(argMsgID)); query.executeStep()){
+    if(auto query = g_dbPod->createQuery("select * from tbl_chatmessage where fld_id = " MIR2_STR_FORMAT_SIZE_T, to_llu(argMsgID)); query.executeStep()){
         return SDChatMessage
         {
             .seq = SDChatMessageDBSeq
@@ -350,7 +350,7 @@ std::optional<SDChatMessage> Player::dbQueryChatMessage(uint64_t argMsgID)
 std::vector<uint32_t> Player::dbLoadChatGroupMemberList(uint32_t chatGroup)
 {
     std::vector<uint32_t> result;
-    auto query = g_dbPod->createQuery("select * from tbl_chatgroupmember where fld_group = %llu", to_llu(chatGroup));
+    auto query = g_dbPod->createQuery("select * from tbl_chatgroupmember where fld_group = " MIR2_STR_FORMAT_SIZE_T, to_llu(chatGroup));
 
     while(query.executeStep()){
         result.push_back(to_u32(query.getColumn("fld_member").getInt64())); // self may not be in this group
@@ -422,7 +422,7 @@ void Player::dbUpdateMagicKey(uint32_t magicID, char key)
     auto query = g_dbPod->createQuery(
             u8R"###( insert into tbl_playerconfig(fld_dbid, fld_magickeylist) )###"
             u8R"###( values                                                   )###"
-            u8R"###(     (%llu, ?)                                            )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                            )###"
             u8R"###(                                                          )###"
             u8R"###( on conflict(fld_dbid) do update set                      )###"
             u8R"###(     fld_magickeylist = excluded.fld_magickeylist         )###",
@@ -439,7 +439,7 @@ void Player::dbUpdateRuntimeConfig()
     auto query = g_dbPod->createQuery(
             u8R"###( insert into tbl_playerconfig(fld_dbid, fld_runtimeconfig) )###"
             u8R"###( values                                                    )###"
-            u8R"###(     (%llu, ?)                                             )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                             )###"
             u8R"###(                                                           )###"
             u8R"###( on conflict(fld_dbid) do update set                       )###"
             u8R"###(     fld_runtimeconfig = excluded.fld_runtimeconfig        )###",
@@ -459,12 +459,12 @@ void Player::dbLoadBelt()
     // |<----primary key---->|
 
     m_sdItemStorage.belt.clear();
-    auto query = g_dbPod->createQuery("select * from tbl_belt where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_belt where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         const auto index = check_cast<size_t, unsigned>(query.getColumn("fld_belt"));
         if(index >= 6){
-            throw fflerror("invalid belt slot: %llu", index);
+            throw fflerror("invalid belt slot: " MIR2_STR_FORMAT_SIZE_T, index);
         }
 
         const auto itemID = check_cast<uint32_t, unsigned>(query.getColumn("fld_itemid"));
@@ -503,7 +503,7 @@ void Player::dbUpdateBeltItem(size_t slot, const SDItem &item)
     g_dbPod->exec(
             u8R"###( replace into tbl_belt(fld_dbid, fld_belt, fld_itemid, fld_count) )###"
             u8R"###( values                                                           )###"
-            u8R"###(     (%llu, %llu, %llu, %llu)                                     )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###()                                     )###",
 
             to_llu(dbid()),
             to_llu(slot),
@@ -514,9 +514,9 @@ void Player::dbUpdateBeltItem(size_t slot, const SDItem &item)
 void Player::dbRemoveBeltItem(size_t slot)
 {
     if(slot >= 6){
-        throw fflerror("invalid belt slot: %llu", slot);
+        throw fflerror("invalid belt slot: " MIR2_STR_FORMAT_SIZE_T, slot);
     }
-    g_dbPod->exec("delete from tbl_belt where fld_dbid = %llu and fld_belt = %llu", to_llu(dbid()), slot);
+    g_dbPod->exec("delete from tbl_belt where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_belt = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()), slot);
 }
 
 void Player::dbLoadWear()
@@ -528,7 +528,7 @@ void Player::dbLoadWear()
     // |<----primary key---->|
 
     m_sdItemStorage.wear.clear();
-    auto query = g_dbPod->createQuery("select * from tbl_wear where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_wear where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         const auto wltype = check_cast<int, unsigned>(query.getColumn("fld_wear"));
@@ -571,7 +571,7 @@ void Player::dbUpdateWearItem(int wltype, const SDItem &item)
     auto query = g_dbPod->createQuery(
             u8R"###( replace into tbl_wear(fld_dbid, fld_wear, fld_itemid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
             u8R"###( values                                                                                                           )###"
-            u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                      )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                      )###",
 
             to_llu(dbid()),
             to_llu(wltype),
@@ -589,7 +589,7 @@ void Player::dbRemoveWearItem(int wltype)
     if(!(wltype >= WLG_BEGIN && wltype < WLG_END)){
         throw fflerror("bad wltype: %d", wltype);
     }
-    g_dbPod->exec("delete from tbl_wear where fld_dbid = %llu and fld_wear = %llu", to_llu(dbid()), to_llu(wltype));
+    g_dbPod->exec("delete from tbl_wear where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_wear = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()), to_llu(wltype));
 }
 
 void Player::dbLearnMagic(uint32_t magicID)
@@ -604,7 +604,7 @@ void Player::dbLearnMagic(uint32_t magicID)
     g_dbPod->exec(
             u8R"###( insert into tbl_learnedmagiclist(fld_dbid, fld_magicid) )###"
             u8R"###( values                                                  )###"
-            u8R"###(     (%llu, %llu)                                        )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###()                                        )###",
 
             to_llu(dbid()),
             to_llu(magicID));
@@ -614,7 +614,7 @@ void Player::dbAddMagicExp(uint32_t magicID, size_t exp)
 {
     fflassert(DBCOM_MAGICRECORD(magicID));
     if(exp > 0){
-        g_dbPod->exec("update tbl_learnedmagiclist set fld_exp = fld_exp + %llu where fld_dbid = %llu and fld_magic = %llu", to_llu(dbid()), to_llu(magicID), exp);
+        g_dbPod->exec("update tbl_learnedmagiclist set fld_exp = fld_exp + " MIR2_STR_FORMAT_SIZE_T " where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_magic = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()), to_llu(magicID), exp);
     }
 }
 
@@ -627,7 +627,7 @@ void Player::dbLoadLearnedMagic()
     // |<----primary key----->|
 
     m_sdLearnedMagicList.clear();
-    auto query = g_dbPod->createQuery("select * from tbl_learnedmagiclist where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_learnedmagiclist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         m_sdLearnedMagicList.magicList.push_back(SDLearnedMagic
@@ -649,7 +649,7 @@ void Player::dbLoadFriendList()
     // |<--primary key-->|
 
     m_sdFriendList.clear();
-    auto queryPlayer = g_dbPod->createQuery("select * from tbl_char where fld_dbid in (select fld_friend from tbl_friend where fld_dbid = %llu)", to_llu(dbid()));
+    auto queryPlayer = g_dbPod->createQuery("select * from tbl_char where fld_dbid in (select fld_friend from tbl_friend where fld_dbid = " MIR2_STR_FORMAT_SIZE_T ")", to_llu(dbid()));
 
     while(queryPlayer.executeStep()){
         m_sdFriendList.push_back(SDChatPeer
@@ -666,7 +666,7 @@ void Player::dbLoadFriendList()
         });
     }
 
-    auto queryChatGroup = g_dbPod->createQuery("select * from tbl_chatgroup where fld_id in (select fld_group from tbl_chatgroupmember where fld_member = %llu)", to_llu(dbid()));
+    auto queryChatGroup = g_dbPod->createQuery("select * from tbl_chatgroup where fld_id in (select fld_group from tbl_chatgroupmember where fld_member = " MIR2_STR_FORMAT_SIZE_T ")", to_llu(dbid()));
 
     while(queryChatGroup.executeStep()){
         m_sdFriendList.push_back(SDChatPeer
@@ -690,7 +690,7 @@ std::tuple<uint64_t, uint64_t> Player::dbSaveChatMessage(const SDChatPeerID &fro
     auto query = g_dbPod->createQuery(
         u8R"###( insert into tbl_chatmessage(fld_timestamp, fld_refer, fld_from, fld_to, fld_message) )###"
         u8R"###( values                                                                               )###"
-        u8R"###(     (%llu, %s, %llu, %llu, ?)                                                        )###"
+        u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, %s, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                        )###"
         u8R"###( returning                                                                            )###"
         u8R"###(     fld_id;                                                                          )###",
 
@@ -722,7 +722,7 @@ SDChatMessageList Player::dbRetrieveLatestChatMessage(const std::span<const uint
 
         queries.push_back("select * from ( select * from tbl_chatmessage where ");
         if(includeSend){
-            queries.back().append(str_printf("(fld_from = %llu and fld_to = %llu) ", to_llu(cpid().asU64()), to_llu(other)));
+            queries.back().append(str_printf("(fld_from = " MIR2_STR_FORMAT_SIZE_T " and fld_to = " MIR2_STR_FORMAT_SIZE_T ") ", to_llu(cpid().asU64()), to_llu(other)));
         }
 
         if(includeRecv){
@@ -731,17 +731,17 @@ SDChatMessageList Player::dbRetrieveLatestChatMessage(const std::span<const uint
             }
 
             if(SDChatPeerID(other).group()){
-                queries.back().append(str_printf("(fld_to = %llu) ", to_llu(other)));
+                queries.back().append(str_printf("(fld_to = " MIR2_STR_FORMAT_SIZE_T ") ", to_llu(other)));
             }
             else{
-                queries.back().append(str_printf("(fld_from = %llu and fld_to = %llu) ", to_llu(other), to_llu(cpid().asU64())));
+                queries.back().append(str_printf("(fld_from = " MIR2_STR_FORMAT_SIZE_T " and fld_to = " MIR2_STR_FORMAT_SIZE_T ") ", to_llu(other), to_llu(cpid().asU64())));
             }
         }
 
         queries.back().append("order by fld_timestamp desc ");
 
         if(limitPerID > 0){
-            queries.back().append(str_printf("limit %llu ", limitPerID));
+            queries.back().append(str_printf("limit " MIR2_STR_FORMAT_SIZE_T " ", limitPerID));
         }
 
         queries.back().append(" )");
@@ -776,12 +776,12 @@ SDChatMessageList Player::dbRetrieveLatestChatMessage(const std::span<const uint
 
 bool Player::dbHasPlayer(uint32_t argDBID)
 {
-    return g_dbPod->createQuery("select fld_dbid from tbl_char where fld_dbid = %llu", to_llu(argDBID)).executeStep();
+    return g_dbPod->createQuery("select fld_dbid from tbl_char where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID)).executeStep();
 }
 
 SDRuntimeConfig Player::dbGetRuntimeConfig(uint32_t argDBID)
 {
-    auto query = g_dbPod->createQuery("select * from tbl_playerconfig where fld_dbid = %llu", to_llu(argDBID));
+    auto query = g_dbPod->createQuery("select * from tbl_playerconfig where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID));
     if(query.executeStep()){
         if(const std::string buf = query.getColumn("fld_runtimeconfig"); !buf.empty()){
             return cerealf::deserialize<SDRuntimeConfig>(buf);
@@ -792,21 +792,21 @@ SDRuntimeConfig Player::dbGetRuntimeConfig(uint32_t argDBID)
 
 std::string Player::dbGetPlayerName(uint32_t argDBID)
 {
-    auto query = g_dbPod->createQuery("select fld_name from tbl_char where fld_dbid = %llu", to_llu(argDBID));
+    auto query = g_dbPod->createQuery("select fld_name from tbl_char where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID));
     if(query.executeStep()){
         return query.getColumn("fld_name");
     }
-    throw fflerror("invalid dbid: %llu", to_llu(argDBID));
+    throw fflerror("invalid dbid: " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID));
 }
 
 bool Player::dbIsFriend(uint32_t argDBID, uint32_t argFriendDBID)
 {
-    return g_dbPod->createQuery("select fld_dbid from tbl_friend where fld_dbid = %llu and fld_friend = %llu", to_llu(argDBID), to_llu(argFriendDBID)).executeStep();
+    return g_dbPod->createQuery("select fld_dbid from tbl_friend where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_friend = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID), to_llu(argFriendDBID)).executeStep();
 }
 
 bool Player::dbIsBlocked(uint32_t argDBID, uint32_t argBlockedDBID)
 {
-    return g_dbPod->createQuery("select fld_dbid from tbl_blacklist where fld_dbid = %llu and fld_blocked = %llu", to_llu(argDBID), to_llu(argBlockedDBID)).executeStep();
+    return g_dbPod->createQuery("select fld_dbid from tbl_blacklist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_blocked = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID), to_llu(argBlockedDBID)).executeStep();
 }
 
 int Player::dbAddFriend(uint32_t argDBID, uint32_t argFriendDBID)
@@ -814,7 +814,7 @@ int Player::dbAddFriend(uint32_t argDBID, uint32_t argFriendDBID)
     auto query = g_dbPod->createQuery(
         u8R"###( insert or ignore into tbl_friend(fld_dbid, fld_friend) )###"
         u8R"###( values                                                 )###"
-        u8R"###(     (%llu, %llu)                                       )###"
+        u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###()                                       )###"
         u8R"###( returning                                              )###"
         u8R"###(     fld_dbid;                                          )###",
 
@@ -834,12 +834,12 @@ int Player::dbBlockPlayer(uint32_t argDBID, uint32_t argPlayerDBID)
     int result = BP_NONE;
     auto dbTrans = g_dbPod->createTransaction();
 
-    g_dbPod->exec("delete from tbl_friend where fld_dbid = %llu and fld_friend = %llu", to_llu(argDBID), to_llu(argPlayerDBID));
+    g_dbPod->exec("delete from tbl_friend where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_friend = " MIR2_STR_FORMAT_SIZE_T, to_llu(argDBID), to_llu(argPlayerDBID));
     {
         auto query = g_dbPod->createQuery(
             u8R"###( insert or ignore into tbl_blacklist(fld_dbid, fld_blocked) )###"
             u8R"###( values                                                     )###"
-            u8R"###(     (%llu, %llu)                                           )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###()                                           )###"
             u8R"###( returning                                                  )###"
             u8R"###(     fld_dbid;                                              )###",
 
@@ -867,7 +867,7 @@ SDChatPeer Player::dbCreateChatGroup(const char *name, const std::span<const uin
     auto query = g_dbPod->createQuery(
             u8R"###( insert into tbl_chatgroup(fld_creator, fld_createtime, fld_name) )###"
             u8R"###( values                                                           )###"
-            u8R"###(     (%llu, %llu, '%s')                                           )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s')                                           )###"
             u8R"###( returning                                                        )###"
             u8R"###(     fld_id;                                                      )###",
 
@@ -897,7 +897,7 @@ SDChatPeer Player::dbCreateChatGroup(const char *name, const std::span<const uin
                 valStr.append(",");
             }
 
-            valStr.append(str_printf("(%llu, %llu, %llu, %llu)",
+            valStr.append(str_printf("(" MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T ")",
                 to_llu(groupCP.id),
                 to_llu(memberDBID),
                 to_llu(0), // TODO - define group permission

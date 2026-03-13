@@ -764,7 +764,7 @@ void ProcessRun::preloadMapBin(uint64_t newMapUID)
         m_mir2xMapData = *mapBinPtr;
     }
     else{
-        throw fflerror("failed to preload mapBin for mapUID: %llu", to_llu(newMapUID));
+        throw fflerror("failed to preload mapBin for mapUID: " MIR2_STR_FORMAT_SIZE_T, to_llu(newMapUID));
     }
 }
 
@@ -1432,11 +1432,11 @@ void ProcessRun::registerLuaExport(ClientLuaModule *luaModulePtr)
         }
 
         if(!itemID){
-            throw fflerror("invalid itemID: %llu", to_llu(itemID));
+            throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
         }
 
         if(count <= 0){
-            throw fflerror("invalid count: %llu", to_llu(count));
+            throw fflerror("invalid count: " MIR2_STR_FORMAT_SIZE_T, to_llu(count));
         }
 
         requestMakeItem(itemID, count);
@@ -1530,7 +1530,7 @@ ClientCreature *ProcessRun::findUID(uint64_t uid, bool checkVisible) const
 
     if(auto p = m_coList.find(uid); p != m_coList.end()){
         if(p->second->UID() != uid){
-            throw fflerror("invalid creature: %p, UID = %llu", to_cvptr(p->second.get()), to_llu(p->second->UID()));
+            throw fflerror("invalid creature: %p, UID = " MIR2_STR_FORMAT_SIZE_T, to_cvptr(p->second.get()), to_llu(p->second->UID()));
         }
 
         if(!checkVisible || p->second->visible()){
@@ -1676,7 +1676,7 @@ std::tuple<int, int> ProcessRun::getRandLoc(uint32_t reqMapID, size_t tryCount)
     }();
 
     if(!mapBinPtr){
-        throw fflerror("failed to find map with mapID = %llu", to_llu(reqMapID));
+        throw fflerror("failed to find map with mapID = " MIR2_STR_FORMAT_SIZE_T, to_llu(reqMapID));
     }
 
     for(size_t i = 0; (tryCount == 0) || (i < tryCount); ++i){
@@ -1688,7 +1688,7 @@ std::tuple<int, int> ProcessRun::getRandLoc(uint32_t reqMapID, size_t tryCount)
         }
     }
 
-    throw fflerror("can not find a valid location on mapID %llu by %llu tries", to_llu(reqMapID), tryCount);
+    throw fflerror("can not find a valid location on mapID " MIR2_STR_FORMAT_SIZE_T " by " MIR2_STR_FORMAT_SIZE_T " tries", to_llu(reqMapID), tryCount);
 }
 
 bool ProcessRun::requestSpaceMove(uint64_t nMapUID, int nX, int nY)
@@ -1768,7 +1768,7 @@ void ProcessRun::requestLatestChatMessage(const std::vector<uint64_t> &cpids, si
     std::memset(&cmRLCM, 0, sizeof(cmRLCM));
 
     if(cpids.size() > cmRLCM.cpidList.capacity()){
-        throw fflerror("query of %llu cpids exceeds capacity %llu", cpids.size(), cmRLCM.cpidList.capacity());
+        throw fflerror("query of " MIR2_STR_FORMAT_SIZE_T " cpids exceeds capacity " MIR2_STR_FORMAT_SIZE_T, cpids.size(), cmRLCM.cpidList.capacity());
     }
 
     for(const auto &cpid: cpids){
@@ -1956,7 +1956,7 @@ void ProcessRun::drawGroundItem(int x0, int y0, int x1, int y1) const
         for(const auto itemID: p.second){
             const auto &ir = DBCOM_ITEMRECORD(itemID);
             if(!ir){
-                throw fflerror("invalid itemID: %llu", to_llu(itemID));
+                throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
             }
 
             if(ir.pkgGfxID < 0){
@@ -2385,7 +2385,7 @@ void ProcessRun::queryUIDBuff(uint64_t uid) const
             }
         default:
             {
-                throw fflerror("invalid uid: %llu, type: %s", to_llu(uid), uidf::getUIDTypeCStr(uid));
+                throw fflerror("invalid uid: " MIR2_STR_FORMAT_SIZE_T ", type: %s", to_llu(uid), uidf::getUIDTypeCStr(uid));
             }
     }
 }
@@ -2423,7 +2423,7 @@ void ProcessRun::queryMapBaseUID(uint32_t mapID, std::function<void(uint64_t)> o
 void ProcessRun::queryPlayerWLDesp(uint64_t uid) const
 {
     if(uidf::getUIDType(uid) != UID_PLY){
-        throw fflerror("invalid uid: %llu, type: %s", to_llu(uid), uidf::getUIDTypeCStr(uid));
+        throw fflerror("invalid uid: " MIR2_STR_FORMAT_SIZE_T ", type: %s", to_llu(uid), uidf::getUIDTypeCStr(uid));
     }
 
     CMQueryPlayerWLDesp cmQPWLD;
@@ -2444,7 +2444,7 @@ void ProcessRun::requestBuy(uint64_t npcUID, uint32_t itemID, uint32_t seqID, si
     }));
 
     if(count <= 0){
-        throw fflerror("invalid buy count: %llu", count);
+        throw fflerror("invalid buy count: " MIR2_STR_FORMAT_SIZE_T, count);
     }
 
     CMBuy cmB;
@@ -2487,11 +2487,11 @@ void ProcessRun::requestEquipWear(uint32_t itemID, uint32_t seqID, int wltype)
 
     const auto &ir = DBCOM_ITEMRECORD(itemID);
     if(!ir){
-        throw fflerror("invalid itemID: %llu", to_llu(itemID));
+        throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
     }
 
     if(!seqID){
-        throw fflerror("invalid seqID: %llu", to_llu(seqID));
+        throw fflerror("invalid seqID: " MIR2_STR_FORMAT_SIZE_T, to_llu(seqID));
     }
 
     if(!ir.wearable(wltype)){
@@ -2535,11 +2535,11 @@ void ProcessRun::requestEquipBelt(uint32_t itemID, uint32_t seqID, int slot)
 
     const auto &ir = DBCOM_ITEMRECORD(itemID);
     if(!ir){
-        throw fflerror("invalid itemID: %llu", to_llu(itemID));
+        throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
     }
 
     if(!seqID){
-        throw fflerror("invalid seqID: %llu", to_llu(seqID));
+        throw fflerror("invalid seqID: " MIR2_STR_FORMAT_SIZE_T, to_llu(seqID));
     }
 
     if(!ir.beltable()){
@@ -2606,7 +2606,7 @@ bool ProcessRun::addGroundItemID(uint32_t itemID, int x, int y)
     }
 
     if(!DBCOM_ITEMRECORD(itemID)){
-        throw fflerror("invalid itemID: %llu", to_llu(itemID));
+        throw fflerror("invalid itemID: " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
     }
 
     m_groundItemIDList[{x, y}].push_back(itemID);

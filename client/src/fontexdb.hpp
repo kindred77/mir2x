@@ -180,7 +180,7 @@ class FontexDB: public innDB<uint64_t, FontexElement>
             }();
 
             if(currIndex > 0X00FFFFFF){
-                throw fflerror("long text count exceeds limit: %llu", to_llu(currIndex));
+                throw fflerror("long text count exceeds limit: " MIR2_STR_FORMAT_SIZE_T, to_llu(currIndex));
             }
 
             const auto encodedIndex = currIndex | UINT32_C(0XFF000000);

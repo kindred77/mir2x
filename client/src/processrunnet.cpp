@@ -339,7 +339,7 @@ void ProcessRun::on_SM_EXP(const uint8_t *buf, size_t)
 
     getMyHero()->setExp(smExp.exp);
     if((smExp.exp > currExp) && (currExp > 0)){
-        addCBLog(CBLOG_SYS, u8"你获得了经验值%llu", to_llu(smExp.exp - currExp));
+        addCBLog(CBLOG_SYS, u8"你获得了经验值" MIR2_STR_FORMAT_SIZE_T, to_llu(smExp.exp - currExp));
     }
 }
 
@@ -373,11 +373,11 @@ void ProcessRun::on_SM_PING(const uint8_t *bufPtr, size_t)
     const auto smP = ServerMsg::conv<SMPing>(bufPtr);
 
     if(currTick < smP.Tick){
-        throw fflerror("invalid ping tick: %llu -> %llu", to_llu(smP.Tick), to_llu(currTick));
+        throw fflerror("invalid ping tick: " MIR2_STR_FORMAT_SIZE_T " -> " MIR2_STR_FORMAT_SIZE_T, to_llu(smP.Tick), to_llu(currTick));
     }
 
     m_lastPingDone = true;
-    addCBLog(CBLOG_SYS, u8"延迟%llums", to_llu(currTick - smP.Tick));
+    addCBLog(CBLOG_SYS, u8"延迟" MIR2_STR_FORMAT_SIZE_T " ms", to_llu(currTick - smP.Tick));
 }
 
 void ProcessRun::on_SM_BUYERROR(const uint8_t *buf, size_t bufSize)
@@ -418,7 +418,7 @@ void ProcessRun::on_SM_GROUNDITEMIDLIST(const uint8_t *buf, size_t bufSize)
         clearGroundItemIDList(x, y);
         for(const auto itemID: itemIDList){
             if(!DBCOM_ITEMRECORD(itemID)){
-                throw fflerror("invalid itemID = %llu", to_llu(itemID));
+                throw fflerror("invalid itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID));
             }
             addGroundItemID(itemID, x, y);
         }
@@ -566,7 +566,7 @@ void ProcessRun::on_SM_PICKUPERROR(const uint8_t *buf, size_t)
             addCBLog(CBLOG_SYS, u8"无法捡起%s", to_cstr(ir.name));
         }
         else{
-            addCBLog(CBLOG_SYS, u8"无法捡起物品ID = %llu", to_cstr(ir.name), to_llu(smPUE.failedItemID));
+            addCBLog(CBLOG_SYS, u8"无法捡起物品ID = " MIR2_STR_FORMAT_SIZE_T, to_cstr(ir.name), to_llu(smPUE.failedItemID));
         }
     }
     else{
@@ -670,7 +670,7 @@ void ProcessRun::on_SM_UPDATEITEM(const uint8_t *buf, size_t bufSize)
     const auto sdUI = cerealf::deserialize<SDUpdateItem>(buf, bufSize);
     const auto &ir = DBCOM_ITEMRECORD(sdUI.item.itemID);
     if(!ir){
-        throw fflerror("bad item: itemID = %llu", to_llu(sdUI.item.itemID));
+        throw fflerror("bad item: itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(sdUI.item.itemID));
     }
 
     const auto changed = getMyHero()->getInvPack().update(sdUI.item);

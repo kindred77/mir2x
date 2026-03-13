@@ -70,7 +70,7 @@ inline size_t tell_fileptr(fileptr_t &fptr)
 inline void seek_fileptr(fileptr_t &fptr, size_t offset, int origin)
 {
     if(std::fseek(fptr.get(), check_cast<long>(offset), origin)){
-        throw fflerror("failed to seek file: offset = %llu, origin = %s, err = %s", offset, [origin]() -> const char *
+        throw fflerror("failed to seek file: offset = " MIR2_STR_FORMAT_SIZE_T ", origin = %s, err = %s", offset, [origin]() -> const char *
         {
             switch(origin){
                 case SEEK_SET: return "SEEK_SET";
@@ -99,7 +99,7 @@ inline void read_fileptr(fileptr_t &fptr, void *data, size_t size)
     fflassert(size > 0);
 
     if(std::fread(data, size, 1, fptr.get()) != 1){
-        throw fflerror("failed to read file: data = %p, size = %llu, err = %s", to_cvptr(data), size, std::strerror(errno));
+        throw fflerror("failed to read file: data = %p, size = " MIR2_STR_FORMAT_SIZE_T ", err = %s", to_cvptr(data), size, std::strerror(errno));
     }
 }
 
@@ -128,7 +128,7 @@ template<typename C> C read_fileptr(fileptr_t &fptr)
     const auto size = size_fileptr(fptr);
 
     if(size % sizeof(typename C::value_type)){
-        throw fflerror("file size alignment error: file size %llu, element size %llu", size, sizeof(C::value_type));
+        throw fflerror("file size alignment error: file size " MIR2_STR_FORMAT_SIZE_T ", element size " MIR2_STR_FORMAT_SIZE_T, size, sizeof(C::value_type));
     }
 
     C c;
@@ -143,7 +143,7 @@ inline void write_fileptr(fileptr_t &fptr, const void *data, size_t size)
     fflassert(size > 0);
 
     if(std::fwrite(data, size, 1, fptr.get()) != 1){
-        throw fflerror("failed to write file: data = %p, size = %llu, err = %s",
+        throw fflerror("failed to write file: data = %p, size = " MIR2_STR_FORMAT_SIZE_T ", err = %s",
             to_cvptr(data), size, std::strerror(errno));
     }
 }

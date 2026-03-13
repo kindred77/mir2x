@@ -101,7 +101,7 @@ class NetIO final
 
                 if(m_readSBuf[offset] & 0x80){
                     if(offset + 1 >= (sizeof(T) * 8 + 6) / 7){
-                        throw fflerror("variant packet size uses more than %llu bytes", (offset + 1));
+                        throw fflerror("variant packet size uses more than " MIR2_STR_FORMAT_SIZE_T " bytes", (offset + 1));
                     }
                     else{
                         doReadVLInteger<T>(offset + 1, fnOp);

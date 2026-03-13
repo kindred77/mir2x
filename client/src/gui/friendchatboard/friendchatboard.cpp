@@ -651,7 +651,7 @@ FriendChatBoard::FriendChatBoard(Widget::VarInt argX, Widget::VarInt argY, Proce
                                   }
 
                                   if(dbidList.size() > CMCreateChatGroup().list.capacity()){
-                                      throw fflerror("selected too many friends, max %llu", CMCreateChatGroup().list.capacity());
+                                      throw fflerror("selected too many friends, max " MIR2_STR_FORMAT_SIZE_T, CMCreateChatGroup().list.capacity());
                                   }
 
                                   auto inputBoardPtr = dynamic_cast<InputStringBoard *>(m_processRun->getWidget("InputStringBoard"));
@@ -1134,7 +1134,7 @@ void FriendChatBoard::addMessage(std::optional<uint64_t> localPendingID, const S
             return sdCM.to;
         }
         else{
-            throw fflerror("received invalid chat message: from %llu, to %llu, self %llu", to_llu(sdCM.from.asU64()), to_llu(sdCM.to.asU64()), to_llu(m_processRun->getMyHero()->cpid().asU64()));
+            throw fflerror("received invalid chat message: from " MIR2_STR_FORMAT_SIZE_T ", to " MIR2_STR_FORMAT_SIZE_T ", self " MIR2_STR_FORMAT_SIZE_T, to_llu(sdCM.from.asU64()), to_llu(sdCM.to.asU64()), to_llu(m_processRun->getMyHero()->cpid().asU64()));
         }
     }();
 
@@ -1205,7 +1205,7 @@ void FriendChatBoard::addMessagePending(uint64_t localPendingID, const SDChatMes
 {
     fflassert(!sdCM.seq.has_value());
     if(!m_localMessageList.emplace(localPendingID, sdCM).second){
-        throw fflerror("adding a pending message with local pending id which has already been used: %llu", to_llu(localPendingID));
+        throw fflerror("adding a pending message with local pending id which has already been used: " MIR2_STR_FORMAT_SIZE_T, to_llu(localPendingID));
     }
 }
 

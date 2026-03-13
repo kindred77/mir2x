@@ -397,11 +397,11 @@ corof::awaitable<bool> BattleObject::requestSpaceMove(int locX, int locY, bool s
 corof::awaitable<bool> BattleObject::requestMapSwitch(uint64_t argMapUID, int locX, int locY, bool strictMove)
 {
     if(argMapUID == mapUID()){
-        throw fflerror("request to switch on same map: mapUID %llu", to_llu(argMapUID));
+        throw fflerror("request to switch on same map: mapUID " MIR2_STR_FORMAT_SIZE_T, to_llu(argMapUID));
     }
 
     if(locX < 0 || locY < 0){
-        throw fflerror("invalid argument: mapUID %llu, locX %d, locY %d", to_llu(argMapUID), locX, locY);
+        throw fflerror("invalid argument: mapUID " MIR2_STR_FORMAT_SIZE_T ", locX %d, locY %d", to_llu(argMapUID), locX, locY);
     }
 
     if(!canMove(true)){

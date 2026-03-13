@@ -149,15 +149,15 @@ struct MotionNode final
     void print(const std::function<void(const std::string &)> &logFunc) const
     {
         if(logFunc){
-            logFunc(str_printf("[%llu]::motion            = %s", to_llu(m_seq), motionName(this->type)    ));
-            logFunc(str_printf("[%llu]::direction         = %d", to_llu(m_seq), this->direction           ));
-            logFunc(str_printf("[%llu]::speed             = %d", to_llu(m_seq), this->speed               ));
-            logFunc(str_printf("[%llu]::x                 = %d", to_llu(m_seq), this->x                   ));
-            logFunc(str_printf("[%llu]::y                 = %d", to_llu(m_seq), this->y                   ));
-            logFunc(str_printf("[%llu]::endX              = %d", to_llu(m_seq), this->endX                ));
-            logFunc(str_printf("[%llu]::endY              = %d", to_llu(m_seq), this->endY                ));
-            logFunc(str_printf("[%llu]::frame             = %d", to_llu(m_seq), this->frame               ));
-            logFunc(str_printf("[%llu]::triggerList::size = %d", to_llu(m_seq), to_d(m_triggerList.size())));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::motion            = %s", to_llu(m_seq), motionName(this->type)    ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::direction         = %d", to_llu(m_seq), this->direction           ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::speed             = %d", to_llu(m_seq), this->speed               ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::x                 = %d", to_llu(m_seq), this->x                   ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::y                 = %d", to_llu(m_seq), this->y                   ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::endX              = %d", to_llu(m_seq), this->endX                ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::endY              = %d", to_llu(m_seq), this->endY                ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::frame             = %d", to_llu(m_seq), this->frame               ));
+            logFunc(str_printf("[" MIR2_STR_FORMAT_SIZE_T "]::triggerList::size = %d", to_llu(m_seq), to_d(m_triggerList.size())));
         }
     }
 

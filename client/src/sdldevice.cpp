@@ -447,7 +447,7 @@ SDLDevice::SDLDevice()
 #endif
 
         if(Mix_AllocateChannels(m_channelCount) != to_d(m_channelCount)){
-            throw fflerror("failed to allocate %llu channels: %s", m_channelCount, Mix_GetError());
+            throw fflerror("failed to allocate " MIR2_STR_FORMAT_SIZE_T " channels: %s", m_channelCount, Mix_GetError());
         }
 
         for(int channel = 0; channel < to_d(m_channelCount); ++channel){
@@ -853,7 +853,7 @@ TTF_Font *SDLDevice::defaultTTF(uint8_t fontSize)
     if(auto ttfPtr = createTTF(s_defaultTTFData.data(), s_defaultTTFData.size(), fontSize); ttfPtr){
         return m_fontList[fontSize] = ttfPtr;
     }
-    throw fflerror("can't build default ttf with point: %llu", to_llu(fontSize));
+    throw fflerror("can't build default ttf with point: " MIR2_STR_FORMAT_SIZE_T, to_llu(fontSize));
 }
 
 SDL_Texture *SDLDevice::getCover(int r, int angle)

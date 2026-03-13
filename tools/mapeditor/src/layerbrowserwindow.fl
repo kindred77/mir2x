@@ -152,7 +152,7 @@ class LayerBrowserWindow {} {
     if(data.valid()){
         auto pdata = new Mir2xMapData();
         *pdata = std::move(data);
-        m_browser->add(str_printf("layer: %llu x %llu", pdata->w(), pdata->h()).c_str(), pdata);
+        m_browser->add(str_printf("layer: " MIR2_STR_FORMAT_SIZE_T " x " MIR2_STR_FORMAT_SIZE_T, pdata->w(), pdata->h()).c_str(), pdata);
     }
     m_window->redraw();
 }} {}

@@ -36,7 +36,7 @@ class ActorPod final
                 }
                 else{
                     if(!actor->m_respondCBList.try_emplace(seqID, handle).second){
-                        throw fflerror("%s: seqID %llu already has a continuation", to_cstr(uidf::getUIDString(actor->UID())), to_llu(seqID));
+                        throw fflerror("%s: seqID " MIR2_STR_FORMAT_SIZE_T " already has a continuation", to_cstr(uidf::getUIDString(actor->UID())), to_llu(seqID));
                     }
                 }
             }

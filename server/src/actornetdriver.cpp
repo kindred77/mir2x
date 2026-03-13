@@ -65,7 +65,7 @@ void ActorNetDriver::launch(asio::ip::port_type port)
     }
     catch(const std::system_error &e){
         if(e.code() == std::errc::address_in_use){
-            throw fflerror("port %llu is already in use", to_llu(port));
+            throw fflerror("port " MIR2_STR_FORMAT_SIZE_T " is already in use", to_llu(port));
         }
         else{
             throw fflerror("failed to create acceptor: %s", e.what());
@@ -78,7 +78,7 @@ void ActorNetDriver::launch(asio::ip::port_type port)
         throw fflerror("failed to create acceptor: unknown error");
     }
 
-    g_server->addLog(LOGTYPE_INFO, "%s server listens on port %llu", g_serverArgParser->runMode(true), to_llu(m_acceptor->local_endpoint().port()));
+    g_server->addLog(LOGTYPE_INFO, "%s server listens on port " MIR2_STR_FORMAT_SIZE_T, g_serverArgParser->runMode(true), to_llu(m_acceptor->local_endpoint().port()));
     asio::co_spawn(*m_context, listener(), [](std::exception_ptr e)
     {
         if(e){
@@ -138,7 +138,7 @@ asio::awaitable<void> ActorNetDriver::listener()
             );
 
             auto peer = slotPtr->peer.get();
-            g_server->addLog(LOGTYPE_INFO, "Server peer %llu has connected to master", m_peerSlotList.size() - 1);
+            g_server->addLog(LOGTYPE_INFO, "Server peer " MIR2_STR_FORMAT_SIZE_T " has connected to master", m_peerSlotList.size() - 1);
 
             peer->launch();
             postPeer(m_peerSlotList.size() - 1, ActorMsgBuf(AM_SYS_PEERINDEX, cerealf::serialize(SDSysPeerIndex
@@ -309,13 +309,13 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
             {
                 const auto sdPI = mpk.deserialize<SDSysPeerIndex>();
                 if(m_peerIndex.has_value()){
-                    throw fflerror("invalid request to reassign peer %llu to index %llu", m_peerIndex.value(), sdPI.index);
+                    throw fflerror("invalid request to reassign peer " MIR2_STR_FORMAT_SIZE_T " to index " MIR2_STR_FORMAT_SIZE_T, m_peerIndex.value(), sdPI.index);
                 }
 
                 m_peerIndex = sdPI.index;
                 g_serverArgParser->setSharedConfig(cerealf::deserialize<ServerArgParser::MasterSharedConfig>(sdPI.masterConfig));
 
-                g_server->addLog(LOGTYPE_INFO, "Assign peer index %llu", m_peerIndex.value());
+                g_server->addLog(LOGTYPE_INFO, "Assign peer index " MIR2_STR_FORMAT_SIZE_T, m_peerIndex.value());
                 return;
             }
         case AM_SYS_SLAVEPEERPORT:
@@ -343,7 +343,7 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
                         m_remotePeerList[peerIndex] = addr;
                     }
                     else if(p->second != addr){
-                        throw fflerror("peer %llu address has been changed", peerIndex);
+                        throw fflerror("peer " MIR2_STR_FORMAT_SIZE_T " address has been changed", peerIndex);
                     }
 
                     if(peerIndex >= m_peerIndex.value()){
@@ -385,7 +385,7 @@ void ActorNetDriver::onRemoteMessage(size_t fromPeerIndex, uint64_t uid, ActorMs
             }
         case AM_SYS_LAUNCHED:
             {
-                g_server->addLog(LOGTYPE_INFO, "Slave server %llu has been launched", fromPeerIndex);
+                g_server->addLog(LOGTYPE_INFO, "Slave server " MIR2_STR_FORMAT_SIZE_T " has been launched", fromPeerIndex);
                 m_launchedCount++;
 
                 if(m_launchedCount >= peerCount()){

@@ -146,7 +146,7 @@ ServerLuaCoroutineRunner::ServerLuaCoroutineRunner(ActorPod *podPtr)
             }
             else{
                 if(error.empty()){
-                    error.push_back(str_printf("unknown error for runThread: key %llu", to_llu(key)));
+                    error.push_back(str_printf("unknown error for runThread: key " MIR2_STR_FORMAT_SIZE_T, to_llu(key)));
                 }
 
                 for(const auto &line: error){
@@ -467,7 +467,7 @@ std::pair<uint64_t, uint64_t> ServerLuaCoroutineRunner::spawn(uint64_t key, std:
         }
         else{
             if(error.empty()){
-                error.push_back(str_printf("unknown error for runner: key %llu", to_llu(key)));
+                error.push_back(str_printf("unknown error for runner: key " MIR2_STR_FORMAT_SIZE_T, to_llu(key)));
             }
             fnOnThreadDone(std::move(error), {});
         }
@@ -572,7 +572,7 @@ void ServerLuaCoroutineRunner::resumeRunner(LuaThreadHandle *runnerPtr, std::opt
         }
         else{
             if(error.empty()){
-                error.push_back(str_printf("unknown error for runner: key = %llu", to_llu(runnerPtr->key)));
+                error.push_back(str_printf("unknown error for runner: key = " MIR2_STR_FORMAT_SIZE_T, to_llu(runnerPtr->key)));
             }
 
             for(const auto &line: error){

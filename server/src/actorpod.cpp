@@ -230,7 +230,7 @@ void ActorPod::PrintMonitor() const
         const uint64_t nSendCount = m_podMonitor.amProcMonitorList[nIndex].sendCount;
         const uint64_t nRecvCount = m_podMonitor.amProcMonitorList[nIndex].recvCount;
         if(nSendCount || nRecvCount){
-            g_server->addLog(LOGTYPE_INFO, "UID: %s %s: procTick %llu ms, sendCount %llu, recvCount %llu", uidf::getUIDString(UID()).c_str(), mpkName(nIndex), to_llu(nProcTick), to_llu(nSendCount), to_llu(nRecvCount));
+            g_server->addLog(LOGTYPE_INFO, "UID: %s %s: procTick " MIR2_STR_FORMAT_SIZE_T " ms, sendCount " MIR2_STR_FORMAT_SIZE_T ", recvCount " MIR2_STR_FORMAT_SIZE_T, uidf::getUIDString(UID()).c_str(), mpkName(nIndex), to_llu(nProcTick), to_llu(nSendCount), to_llu(nRecvCount));
         }
     }
 }

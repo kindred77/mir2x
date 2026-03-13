@@ -233,7 +233,7 @@ template<size_t SBUFSIZE = 64> class InnActorMsgPack final
     public:
        std::string str(std::optional<uint64_t> toOpt = std::nullopt) const
        {
-           return str_printf("{type:%s, from:%s, %sseqID:%llu, respID:%llu, size:%llu}",
+           return str_printf("{type:%s, from:%s, %sseqID:" MIR2_STR_FORMAT_SIZE_T ", respID:" MIR2_STR_FORMAT_SIZE_T ", size:" MIR2_STR_FORMAT_SIZE_T "}",
                    mpkName(type()),
                    to_cstr(uidf::getUIDString(from())),
                    toOpt.has_value() ? str_printf("to:%s, ", to_cstr(uidf::getUIDString(toOpt.value()))).c_str() : "",

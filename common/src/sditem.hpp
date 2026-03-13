@@ -132,7 +132,7 @@ struct SDItem
 
     std::string str() const
     {
-        return str_printf("(name, itemID, seqID, count, duration) = (%s, %llu, %llu, %llu, (%llu, %llu))",
+        return str_printf("(name, itemID, seqID, count, duration) = (%s, " MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T ", (" MIR2_STR_FORMAT_SIZE_T ", " MIR2_STR_FORMAT_SIZE_T "))",
             to_cstr(DBCOM_ITEMRECORD(itemID).name),
             to_uz(itemID), to_uz(seqID),
             count, duration[0], duration[1]);

@@ -123,13 +123,13 @@ SearchInputLine::SearchInputLine(Widget::VarDir argDir,
                                     hasParent<SearchPage>()->appendAutoCompletionItem(query == std::to_string(candidate.id), candidate, [&candidate, &query]
                                     {
                                         if(const auto pos = candidate.name.find(query); pos != std::string::npos){
-                                            return str_printf(R"###(<par>%s<t color="red">%s</t>%s（%llu）</par>)###", candidate.name.substr(0, pos).c_str(), query.c_str(), candidate.name.substr(pos + query.size()).c_str(), to_llu(candidate.id));
+                                            return str_printf(R"###(<par>%s<t color="red">%s</t>%s（)###" MIR2_STR_FORMAT_SIZE_T R"###(）</par>)###", candidate.name.substr(0, pos).c_str(), query.c_str(), candidate.name.substr(pos + query.size()).c_str(), to_llu(candidate.id));
                                         }
                                         else if(std::to_string(candidate.id) == query){
-                                            return str_printf(R"###(<par>%s（<t color="red">%llu</t>）</par>)###", candidate.name.c_str(), to_llu(candidate.id));
+                                            return str_printf(R"###(<par>%s（<t color="red">)###" MIR2_STR_FORMAT_SIZE_T R"###(</t>）</par>)###", candidate.name.c_str(), to_llu(candidate.id));
                                         }
                                         else{
-                                            return str_printf(R"###(<par>%s（%llu）</par>)###", candidate.name.c_str(), to_llu(candidate.id));
+                                            return str_printf(R"###(<par>%s（)###" MIR2_STR_FORMAT_SIZE_T R"###(）</par>)###", candidate.name.c_str(), to_llu(candidate.id));
                                         }
                                     }());
                                 }

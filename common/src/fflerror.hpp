@@ -9,12 +9,12 @@
 
 inline std::string _fflerror_helper(size_t index)
 {
-    return str_printf("[%llu]: NA", index);
+    return str_printf("[" MIR2_STR_FORMAT_SIZE_T "]: NA", index);
 }
 
 template<typename T> std::string _fflerror_helper(size_t index, const T & t)
 {
-    return str_printf("[%llu]: %s", index, str_any(t).c_str());
+    return str_printf("[" MIR2_STR_FORMAT_SIZE_T "]: %s", index, str_any(t).c_str());
 }
 
 template<typename T, typename ... Args> std::string _fflerror_helper(size_t index, const T & t, Args && ... args)

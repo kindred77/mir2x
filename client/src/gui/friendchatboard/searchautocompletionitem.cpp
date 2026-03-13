@@ -93,7 +93,7 @@ SearchAutoCompletionItem::SearchAutoCompletionItem(Widget::VarDir argDir,
         label.loadXML(argLabelXMLStr);
     }
     else{
-        label.loadXML(str_printf(R"###(<par>%s（%llu）</par>)###", candidate.name.c_str(), to_llu(candidate.id)).c_str());
+        label.loadXML(str_printf(R"###(<par>%s（)###" MIR2_STR_FORMAT_SIZE_T R"###(）</par>)###", candidate.name.c_str(), to_llu(candidate.id)).c_str());
     }
 }
 
