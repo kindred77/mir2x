@@ -109,7 +109,7 @@ ServerMap::LuaThreadRunner::LuaThreadRunner(ServerMap *serverMapPtr)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %llu", argList.size());
+                        throw fflerror("invalid argument count: " MIR2_STR_FORMAT_SIZE_T, argList.size());
                     }
             }
         }();
@@ -171,7 +171,7 @@ ServerMap::LuaThreadRunner::LuaThreadRunner(ServerMap *serverMapPtr)
                     }
                 default:
                     {
-                        throw fflerror("invalid argument count: %llu", argList.size());
+                        throw fflerror("invalid argument count: " MIR2_STR_FORMAT_SIZE_T, argList.size());
                     }
             }
         }();

@@ -67,7 +67,7 @@ void ServerPeer::close()
 
     m_socket.close(ec);
     if(ec){
-        g_server->addLog(LOGTYPE_WARNING, "Close peer %llu: %s", id(), ec.message().c_str());
+        g_server->addLog(LOGTYPE_WARNING, "Close peer " MIR2_STR_FORMAT_SIZE_T ": %s", id(), ec.message().c_str());
     }
 }
 

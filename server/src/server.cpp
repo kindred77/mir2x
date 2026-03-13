@@ -194,7 +194,7 @@ bool Server::createAccountCharacter(const char *id, const char *charName, bool g
     (
         u8R"###( insert into tbl_char(fld_dbid, fld_name, fld_gender, fld_job, fld_map, fld_mapx, fld_mapy) )###"
         u8R"###( values                                                                                     )###"
-        u8R"###(     (%llu, '%s', %d, %d, %d, %d, %d);                                                      )###",
+        u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s', %d, %d, %d, %d, %d);                                                      )###",
 
         to_llu(dbid),
         charName,
@@ -208,7 +208,7 @@ bool Server::createAccountCharacter(const char *id, const char *charName, bool g
     auto query = g_dbPod->createQuery(
         u8R"###( insert into tbl_chatmessage(fld_timestamp, fld_from, fld_to, fld_message) )###"
         u8R"###( values                                                                    )###"
-        u8R"###(     (%llu, %llu, %llu, ?);                                                )###",
+        u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?);                                                )###",
 
         to_llu(hres_tstamp::localtime()),
         to_llu(SYS_CHATDBID_SYSTEM),
@@ -237,7 +237,7 @@ bool Server::createAccountCharacter(const char *id, const char *charName, bool g
         auto query = g_dbPod->createQuery(
                 u8R"###( replace into tbl_inventory(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
                 u8R"###( values                                                                                                                 )###"
-                u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                            )###",
+                u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                            )###",
 
                 to_llu(dbid),
                 to_llu(item.itemID),
@@ -613,7 +613,7 @@ void Server::restart(const std::string &msg)
 
 bool Server::addMonster(uint32_t monsterID, uint32_t mapID, int x, int y, bool strictLoc)
 {
-    addLog(LOGTYPE_INFO, "Try to add monster, monsterID %llu.", to_llu(monsterID));
+    addLog(LOGTYPE_INFO, "Try to add monster, monsterID " MIR2_STR_FORMAT_SIZE_T ".", to_llu(monsterID));
 
     const auto mapUID = uidsf::getMapBaseUID(mapID);
     const auto peerIndex = uidf::peerIndex(mapUID);
@@ -650,7 +650,7 @@ bool Server::addMonster(uint32_t monsterID, uint32_t mapID, int x, int y, bool s
 bool Server::loadBaseMap(uint32_t mapID)
 {
     if(!DBCOM_MAPRECORD(mapID)){
-        addLog(LOGTYPE_WARNING, "Invalid map id: %llu", to_llu(mapID));
+        addLog(LOGTYPE_WARNING, "Invalid map id: " MIR2_STR_FORMAT_SIZE_T, to_llu(mapID));
         return false;
     }
 
@@ -666,7 +666,7 @@ bool Server::loadBaseMap(uint32_t mapID)
             }
         default:
             {
-                addLog(LOGTYPE_WARNING, "Load map failed: %llu", to_llu(mapID));
+                addLog(LOGTYPE_WARNING, "Load map failed: " MIR2_STR_FORMAT_SIZE_T, to_llu(mapID));
                 return false;
             }
     }
@@ -918,7 +918,7 @@ uint64_t Server::sleepExt(uint64_t tickCount)
 void Server::regLuaExport(CommandLuaModule *modulePtr, uint32_t nCWID)
 {
     if(!(modulePtr && nCWID)){
-        throw fflerror("invalid argument: module = %p, window ID = %llu", to_cvptr(modulePtr), to_llu(nCWID));
+        throw fflerror("invalid argument: module = %p, window ID = " MIR2_STR_FORMAT_SIZE_T, to_cvptr(modulePtr), to_llu(nCWID));
     }
 
     // register command quit

@@ -1070,7 +1070,7 @@ std::string Widget::dumpTree() const
 {
     std::vector<std::string> attrs;
 
-    attrs.push_back(str_printf(R"("id":)" MIR2_STR_FORMAT_SIZE_T R")", to_llu(id())));
+    attrs.push_back(str_printf(R"("id":)" MIR2_STR_FORMAT_SIZE_T, to_llu(id())));
     attrs.push_back(str_printf(R"("name":"%s")", name()));
     attrs.push_back(str_printf(R"("type":"%s")", type()));
     attrs.push_back(str_printf(R"("dx":%d)", dx()));

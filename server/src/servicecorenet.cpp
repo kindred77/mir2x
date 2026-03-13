@@ -319,7 +319,7 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
 
         fflassert(item);
         insertedBeltItemCount++;
-        insertQueryBeltString += str_printf(u8R"###( (%llu, %llu, %llu, %llu, %llu, %llu, ?) )###",
+        insertQueryBeltString += str_printf(u8R"###( ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?) )###",
                 to_llu(dbidOpt.value().first),
                 to_llu(item.itemID),
                 to_llu(item.seqID),
@@ -341,7 +341,7 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
     // delete tbl_wear and move them to tbl_inventory
     // need to insert one by one since items in tbl_wear usually has non-empty extAttrList
 
-    auto queryWear = g_dbPod->createQuery(u8R"###( delete from tbl_wear where fld_dbid = %llu returning * )###", to_llu(dbidOpt.value().first));
+    auto queryWear = g_dbPod->createQuery(u8R"###( delete from tbl_wear where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( returning * )###", to_llu(dbidOpt.value().first));
     while(queryWear.executeStep()){
         const SDItem item
         {
@@ -364,7 +364,7 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
         auto insertQuery = g_dbPod->createQuery(
                 u8R"###( insert into tbl_inventory(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
                 u8R"###( values                                                                                                                )###"
-                u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                           )###",
+                u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                           )###",
 
                 to_llu(dbidOpt.value().first),
                 to_llu(item.itemID),
@@ -406,7 +406,7 @@ corof::awaitable<> ServiceCore::net_CM_CREATECHAR(uint32_t channID, uint8_t, con
         return {};
     }
 
-    auto query = g_dbPod->createQuery(u8R"###(select fld_dbid, fld_name from tbl_char where fld_dbid = %llu or fld_name = '%s')###", to_llu(dbidOpt.value().first), name.c_str());
+    auto query = g_dbPod->createQuery(u8R"###(select fld_dbid, fld_name from tbl_char where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( or fld_name = '%s')###", to_llu(dbidOpt.value().first), name.c_str());
     if(query.executeStep()){
         if(const auto existDBID = check_cast<uint32_t, unsigned>(query.getColumn("fld_dbid")); existDBID == dbidOpt.value().first){
             fnCreateCharError(CRTCHARERR_CHAREXIST);
@@ -424,7 +424,7 @@ corof::awaitable<> ServiceCore::net_CM_CREATECHAR(uint32_t channID, uint8_t, con
         (
             u8R"###( insert into tbl_char(fld_dbid, fld_name, fld_gender, fld_job, fld_map, fld_mapx, fld_mapy) )###"
             u8R"###( values                                                                                     )###"
-            u8R"###(     (%llu, '%s', %d, %d, %d, %d, %d);                                                      )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s', %d, %d, %d, %d, %d);                                                      )###",
 
             to_llu(dbidOpt.value().first),
             cmCC.name.as_rawcstr(),

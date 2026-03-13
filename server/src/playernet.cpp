@@ -498,9 +498,9 @@ corof::awaitable<> Player::net_CM_ADDFRIEND(uint8_t, const uint8_t *buf, size_t,
                     fnForwardSystemMessage(str_printf(R"###(
                     <layout>
                         <par><t color="red">%s</t>申请添加你为好友，你可以选择</par>
-                        <par><event id="%s" accept="" cpid="%llu"             >同意</event></par>
-                        <par><event id="%s" reject="" cpid="%llu"             >拒绝</event></par>
-                        <par><event id="%s" reject="" cpid="%llu"     block="">拒绝并将对方加入黑名单</event></par>
+                        <par><event id="%s" accept="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("             >同意</event></par>
+                        <par><event id="%s" reject="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("             >拒绝</event></par>
+                        <par><event id="%s" reject="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("     block="">拒绝并将对方加入黑名单</event></par>
                     </layout>
                     )###",
 
@@ -513,10 +513,10 @@ corof::awaitable<> Player::net_CM_ADDFRIEND(uint8_t, const uint8_t *buf, size_t,
                     fnForwardSystemMessage(str_printf(R"###(
                     <layout>
                         <par><t color="red">%s</t>申请添加你为好友，你可以选择</par>
-                        <par><event id="%s" accept="" cpid="%llu"             >同意</event></par>
-                        <par><event id="%s" accept="" cpid="%llu" addfriend="">同意并添加对方为好友</event></par>
-                        <par><event id="%s" reject="" cpid="%llu"             >拒绝</event></par>
-                        <par><event id="%s" reject="" cpid="%llu"     block="">拒绝并将对方加入黑名单</event></par>
+                        <par><event id="%s" accept="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("             >同意</event></par>
+                        <par><event id="%s" accept="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###(" addfriend="">同意并添加对方为好友</event></par>
+                        <par><event id="%s" reject="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("             >拒绝</event></par>
+                        <par><event id="%s" reject="" cpid=")###" MIR2_STR_FORMAT_SIZE_T R"###("     block="">拒绝并将对方加入黑名单</event></par>
                     </layout>
                     )###",
 
@@ -600,7 +600,7 @@ corof::awaitable<> Player::net_CM_BUY(uint8_t, const uint8_t *buf, size_t, uint6
 {
     const auto cmB = ClientMsg::conv<CMBuy>(buf);
     if(uidf::getUIDType(cmB.npcUID) != UID_NPC){
-        throw fflerror("invalid uid: %llu, type: %s", to_llu(cmB.npcUID), uidf::getUIDTypeCStr(cmB.npcUID));
+        throw fflerror("invalid uid: " MIR2_STR_FORMAT_SIZE_T ", type: %s", to_llu(cmB.npcUID), uidf::getUIDTypeCStr(cmB.npcUID));
     }
 
     AMBuy amB;
@@ -631,7 +631,7 @@ corof::awaitable<> Player::net_CM_BUY(uint8_t, const uint8_t *buf, size_t, uint6
                 const auto sdBC = cerealf::deserialize<SDBuyCost>(mpk.data(), mpk.size());
 
                 if(cmB.itemID != sdBC.item.itemID || cmB.seqID != sdBC.item.seqID){
-                    throw fflerror("item asked and sold are not same: buyItemID = %llu, buySeqID = %llu, soldItemID = %llu, soldSeqID = %llu", to_llu(cmB.itemID), to_llu(cmB.seqID), to_llu(sdBC.item.itemID), to_llu(sdBC.item.seqID));
+                    throw fflerror("item asked and sold are not same: buyItemID = " MIR2_STR_FORMAT_SIZE_T ", buySeqID = " MIR2_STR_FORMAT_SIZE_T ", soldItemID = " MIR2_STR_FORMAT_SIZE_T ", soldSeqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(cmB.itemID), to_llu(cmB.seqID), to_llu(sdBC.item.itemID), to_llu(sdBC.item.seqID));
                 }
 
                 for(const auto &costItem: sdBC.costList){
@@ -663,7 +663,7 @@ corof::awaitable<> Player::net_CM_BUY(uint8_t, const uint8_t *buf, size_t, uint6
 
                     const auto &ir = DBCOM_ITEMRECORD(sdBC.item.itemID);
                     if(!ir){
-                        throw fflerror("bad item: itemID = %llu", to_llu(sdBC.item.itemID));
+                        throw fflerror("bad item: itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(sdBC.item.itemID));
                     }
 
                     if(ir.packable()){

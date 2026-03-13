@@ -1688,7 +1688,7 @@ std::tuple<int, int> ProcessRun::getRandLoc(uint32_t reqMapID, size_t tryCount)
         }
     }
 
-    throw fflerror("can not find a valid location on mapID " MIR2_STR_FORMAT_SIZE_T " by "" tries", to_llu(reqMapID), tryCount);
+    throw fflerror("can not find a valid location on mapID " MIR2_STR_FORMAT_SIZE_T " by " MIR2_STR_FORMAT_SIZE_T " tries", to_llu(reqMapID), tryCount);
 }
 
 bool ProcessRun::requestSpaceMove(uint64_t nMapUID, int nX, int nY)
