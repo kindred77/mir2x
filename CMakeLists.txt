@@ -17,7 +17,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 PROJECT(mir2x)
 
-SET(CMAKE_CXX_STANDARD 26)
+SET(CMAKE_CXX_STANDARD 23)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 FIND_PROGRAM(CCACHE_FOUND ccache)
@@ -40,6 +40,9 @@ IF(WIN32 AND MSVC)
 ELSE()
     ADD_COMPILE_OPTIONS(-fcoroutines)
     ADD_COMPILE_OPTIONS(-fno-strict-aliasing)
+    ADD_COMPILE_OPTIONS(-Wno-cast-function-type)
+    ADD_COMPILE_OPTIONS(-Wno-unused-parameter)
+    ADD_COMPILE_OPTIONS(-Wno-format)
     ADD_COMPILE_OPTIONS(-Wall -Wfatal-errors -Wextra -Wunused -Werror -Wno-missing-field-initializers)
 
     STRING(APPEND CMAKE_CXX_FLAGS_DEBUG " $ENV{CXXFLAGS}")
