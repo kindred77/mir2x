@@ -88,7 +88,7 @@ std::vector<std::string> filesys::getFileList(const char *dir, bool fullPath, co
             continue;
         }
 
-        const auto fileName = p.path().filename().u8string();
+        const auto &fileName = p.path().filename().u8string();
         if(str_haschar(reg)){
             if(!std::regex_match(reinterpret_cast<const char *>(fileName.c_str()), matchRegex)){
                 continue;
@@ -99,7 +99,7 @@ std::vector<std::string> filesys::getFileList(const char *dir, bool fullPath, co
             result.push_back(reinterpret_cast<const char *>(p.path().u8string().c_str()));
         }
         else{
-            result.push_back(reinterpret_cast<const char *>(p.path().filename().c_str()));
+            result.push_back(reinterpret_cast<const char *>(fileName.c_str()));
         }
     }
     return result;
