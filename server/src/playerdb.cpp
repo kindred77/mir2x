@@ -10,7 +10,7 @@ extern Server *g_server;
 luaf::luaVar Player::dbGetVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
+    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
 
     if(query.executeStep()){
         return cerealf::deserialize<luaf::luaVar>(query.getColumn(0).getString());
@@ -24,13 +24,13 @@ void Player::dbSetVar(const std::string &var, luaf::luaVar value)
 {
     fflassert(str_haschar(var));
     if(std::get_if<luaf::luaNil>(&value)){
-        g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s'", to_llu(dbid()), var.c_str());
+        g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s'", to_llu(dbid()), var.c_str());
     }
     else{
         auto query = g_dbPod->createQuery(
             u8R"###( insert into tbl_charvarlist(fld_dbid, fld_var, fld_value) )###"
             u8R"###( values                                                    )###"
-            u8R"###(     (%llu, '%s', ?)                                       )###"
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, '%s', ?)                                       )###"
             u8R"###(                                                           )###"
             u8R"###( on conflict(fld_dbid, fld_var) do                         )###"
             u8R"###( update set                                                )###"
@@ -48,7 +48,7 @@ void Player::dbSetVar(const std::string &var, luaf::luaVar value)
 std::pair<bool, luaf::luaVar> Player::dbHasVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
+    auto query = g_dbPod->createQuery("select fld_value from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s' and fld_value is not null", to_llu(dbid()), var.c_str());
 
     if(query.executeStep()){
         return std::make_pair(true, cerealf::deserialize<luaf::luaVar>(query.getColumn(0).getString()));
@@ -61,24 +61,24 @@ std::pair<bool, luaf::luaVar> Player::dbHasVar(const std::string &var)
 void Player::dbRemoveVar(const std::string &var)
 {
     fflassert(str_haschar(var));
-    g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = %llu and fld_var = '%s'", to_llu(dbid()), var.c_str());
+    g_dbPod->exec("delete from tbl_charvarlist where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_var = '%s'", to_llu(dbid()), var.c_str());
 }
 
 void Player::dbUpdateExp()
 {
-    g_dbPod->exec(u8R"###( update tbl_char set fld_exp = %llu where fld_dbid = %llu )###", to_llu(exp()), to_llu(dbid()));
+    g_dbPod->exec(u8R"###( update tbl_char set fld_exp = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", to_llu(exp()), to_llu(dbid()));
 }
 
 void Player::dbUpdateMapGLoc()
 {
     if(uidf::isBaseMap(mapUID())){
-        g_dbPod->exec(u8R"###( update tbl_char set fld_map = %d, fld_mapx = %d, fld_mapy = %d where fld_dbid = %llu )###", to_d(mapID()), X(), Y(), to_llu(dbid()));
+        g_dbPod->exec(u8R"###( update tbl_char set fld_map = %d, fld_mapx = %d, fld_mapy = %d where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", to_d(mapID()), X(), Y(), to_llu(dbid()));
     }
 }
 
 void Player::dbUpdateHealth()
 {
-    g_dbPod->exec(u8R"###( update tbl_char set fld_hp = %d, fld_mp = %d where fld_dbid = %llu )###", m_sdHealth.hp, m_sdHealth.mp, to_llu(dbid()));
+    g_dbPod->exec(u8R"###( update tbl_char set fld_hp = %d, fld_mp = %d where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( )###", m_sdHealth.hp, m_sdHealth.mp, to_llu(dbid()));
 }
 
 void Player::dbLoadInventory()
@@ -90,7 +90,7 @@ void Player::dbLoadInventory()
     // |<----primary key---->|
 
     m_sdItemStorage.inventory.clear();
-    auto query = g_dbPod->createQuery("select * from tbl_inventory where fld_dbid = %llu", to_llu(dbid()));
+    auto query = g_dbPod->createQuery("select * from tbl_inventory where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()));
 
     while(query.executeStep()){
         SDItem item
@@ -117,7 +117,7 @@ void Player::dbUpdateInventoryItem(const SDItem &item)
     auto query = g_dbPod->createQuery(
             u8R"###( replace into tbl_inventory(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
             u8R"###( values                                                                                                                 )###"
-            u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                            )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                            )###",
 
             to_llu(dbid()),
             to_llu(item.itemID),
@@ -141,9 +141,9 @@ void Player::dbRemoveInventoryItem(uint32_t itemID, uint32_t seqID)
     // means won't support remove more than 1 item in database per call
 
     if(!(DBCOM_ITEMRECORD(itemID) && seqID > 0)){
-        throw fflerror("invalid arguments: itemID = %llu, seqID = %llu", to_llu(itemID), to_llu(seqID));
+        throw fflerror("invalid arguments: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(itemID), to_llu(seqID));
     }
-    g_dbPod->exec("delete from tbl_inventory where fld_dbid = %llu and fld_itemid = %llu and fld_seqid = %llu", to_llu(dbid()), to_llu(itemID), to_llu(seqID));
+    g_dbPod->exec("delete from tbl_inventory where fld_dbid = " MIR2_STR_FORMAT_SIZE_T " and fld_itemid = " MIR2_STR_FORMAT_SIZE_T " and fld_seqid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbid()), to_llu(itemID), to_llu(seqID));
 }
 
 void Player::dbSecureItem(uint32_t itemID, uint32_t seqID)
@@ -154,7 +154,7 @@ void Player::dbSecureItem(uint32_t itemID, uint32_t seqID)
     auto query = g_dbPod->createQuery(
             u8R"###( replace into tbl_secureditemlist(fld_dbid, fld_itemid, fld_seqid, fld_count, fld_duration, fld_maxduration, fld_extattrlist) )###"
             u8R"###( values                                                                                                                       )###"
-            u8R"###(     (%llu, %llu, %llu, %llu, %llu, %llu, ?)                                                                                  )###",
+            u8R"###(     ()###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, )###" MIR2_STR_FORMAT_SIZE_T u8R"###(, ?)                                                                                  )###",
 
             to_llu(dbid()),
             to_llu(item.itemID),

@@ -147,7 +147,7 @@ corof::awaitable<> Player::on_AM_MAPSWITCHTRIGGER(const ActorMsgPack &mpk)
 {
     const auto amMST = mpk.conv<AMMapSwitchTrigger>();
     if(!uidf::isMap(amMST.mapUID)){
-        g_server->addLog(LOGTYPE_WARNING, "Map switch request failed: mapUID %llu", to_llu(amMST.mapUID));
+        g_server->addLog(LOGTYPE_WARNING, "Map switch request failed: mapUID " MIR2_STR_FORMAT_SIZE_T, to_llu(amMST.mapUID));
     }
 
     if(amMST.mapUID == mapUID()){
@@ -288,7 +288,7 @@ corof::awaitable<> Player::on_AM_EXP(const ActorMsgPack &mpk)
 {
     const auto amE = mpk.conv<AMExp>();
     if(!m_slaveList.contains(mpk.from()) && uidf::isMonster(mpk.from())){
-        m_luaRunner->spawn(m_threadKey++, str_printf("_RSVD_NAME_trigger(SYS_ON_KILL, %llu)", to_llu(uidf::getMonsterID(mpk.from()))));
+        m_luaRunner->spawn(m_threadKey++, str_printf("_RSVD_NAME_trigger(SYS_ON_KILL, " MIR2_STR_FORMAT_SIZE_T ")", to_llu(uidf::getMonsterID(mpk.from()))));
     }
 
     gainExp(amE.exp);

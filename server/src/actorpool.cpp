@@ -122,7 +122,7 @@ void ActorPool::attach(ActorPod *actorPtr)
 
         MailboxSubBucket::WLockGuard lockGuard(subBucket.lock);
         if(!(subBucket.mailboxList.emplace(uid, std::move(mailboxPtr)).second)){
-            throw fflerror("actor UID %llu exists in bucket already", to_llu(uid));
+            throw fflerror("actor UID " MIR2_STR_FORMAT_SIZE_T " exists in bucket already", to_llu(uid));
         }
     }
 
@@ -152,7 +152,7 @@ void ActorPool::attach(Receiver *receiverPtr)
 
     const std::lock_guard<std::mutex> lockGuard(m_receiverLock);
     if(!m_receiverList.emplace(receiverPtr->UID(), receiverPtr).second){
-        throw fflerror("receriver UID %llu alreayd exists in receriver list", to_llu(receiverPtr->UID()));
+        throw fflerror("receriver UID " MIR2_STR_FORMAT_SIZE_T " alreayd exists in receriver list", to_llu(receiverPtr->UID()));
     }
 }
 
@@ -550,7 +550,7 @@ bool ActorPool::runOneMailbox(Mailbox *mailboxPtr)
 
             const uint64_t timeNow = mailboxPtr->monitor.liveTimer.diff_nsec();
             if(timeNow < p->second){
-                throw fflerror("monotonic clock error: %llu -> %llu", to_llu(p->second), to_llu(timeNow));
+                throw fflerror("monotonic clock error: " MIR2_STR_FORMAT_SIZE_T " -> " MIR2_STR_FORMAT_SIZE_T, to_llu(p->second), to_llu(timeNow));
             }
 
             mailboxPtr->monitor.avgDelay.store((mailboxPtr->monitor.avgDelay.load() * 7 + (timeNow - p->second)) / 8);
@@ -828,7 +828,7 @@ void ActorPool::launchPool()
     const auto logicalFPS = g_serverArgParser->sharedConfig().logicalFPS;
 
     g_server->addLog(LOGTYPE_INFO, "Logical FPS: %d", logicalFPS);
-    g_server->addLog(LOGTYPE_INFO, "Launch actor pool with %llu thread", m_bucketList.size());
+    g_server->addLog(LOGTYPE_INFO, "Launch actor pool with " MIR2_STR_FORMAT_SIZE_T " thread", m_bucketList.size());
 
     for(int bucketId = 0; bucketId < to_d(m_bucketList.size()); ++bucketId){
         m_bucketList.at(bucketId).runThread = std::async(std::launch::async, [bucketId, logicalFPS, this]()

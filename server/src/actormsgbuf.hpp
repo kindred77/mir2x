@@ -70,6 +70,6 @@ class ActorMsgBuf final
     public:
         std::string str() const
         {
-            return str_printf("{type:%s, size:%llu}", mpkName(type()), to_llu(size()));
+            return str_printf("{type:%s, size:" MIR2_STR_FORMAT_SIZE_T "}", mpkName(type()), to_llu(size()));
         }
 };

@@ -213,7 +213,7 @@ auto WidgetTreeNode::prevChild(this auto && self, uint64_t childID) -> check_con
             return nullptr;
         }
     }
-    throw fflerror("can not find child %llu", to_llu(childID));
+    throw fflerror("can not find child " MIR2_STR_FORMAT_SIZE_T, to_llu(childID));
 }
 
 auto WidgetTreeNode::nextChild(this auto && self, uint64_t childID) -> check_const_cond_out_ptr_t<decltype(self), Widget>
@@ -229,7 +229,7 @@ auto WidgetTreeNode::nextChild(this auto && self, uint64_t childID) -> check_con
             return nullptr;
         }
     }
-    throw fflerror("can not find child %llu", to_llu(childID));
+    throw fflerror("can not find child " MIR2_STR_FORMAT_SIZE_T, to_llu(childID));
 }
 
 template<std::derived_from<Widget> T> auto WidgetTreeNode::hasParent(this auto && self) -> check_const_cond_out_ptr_t<decltype(self), T>

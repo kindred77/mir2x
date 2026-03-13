@@ -284,6 +284,16 @@ function(print_target_link_libraries target_name)
     message(STATUS "==========================================")
 endfunction()
 
+IF(WIN32 AND NOT MSVC)
+    ADD_COMPILE_DEFINITIONS(
+            MIR2_STR_FORMAT_SIZE_T="%llu"
+    )
+ELSE ()
+    ADD_COMPILE_DEFINITIONS(
+            MIR2_STR_FORMAT_SIZE_T="%zu"
+    )
+ENDIF()
+
 ADD_SUBDIRECTORY(common)
 ADD_SUBDIRECTORY(server)
 ADD_SUBDIRECTORY(client)

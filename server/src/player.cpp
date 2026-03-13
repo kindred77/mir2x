@@ -1676,7 +1676,7 @@ const SDItem &Player::addInventoryItem(SDItem item, bool keepSeqID)
     const auto &addedItem = m_sdItemStorage.inventory.add(std::move(item), keepSeqID);
     dbUpdateInventoryItem(addedItem);
 
-    m_luaRunner->spawn(m_threadKey++, str_printf("_RSVD_NAME_trigger(SYS_ON_GAINITEM, %llu)", to_llu(item.itemID)));
+    m_luaRunner->spawn(m_threadKey++, str_printf("_RSVD_NAME_trigger(SYS_ON_GAINITEM, " MIR2_STR_FORMAT_SIZE_T ")", to_llu(item.itemID)));
 
     postNetMessage(SM_UPDATEITEM, cerealf::serialize(SDUpdateItem
     {
@@ -1753,7 +1753,7 @@ void Player::removeSecuredItem(uint32_t itemID, uint32_t seqID)
 void Player::setGold(size_t gold)
 {
     m_sdItemStorage.gold = gold;
-    g_dbPod->exec("update tbl_char set fld_gold = %llu where fld_dbid = %llu", to_llu(m_sdItemStorage.gold), to_llu(dbid()));
+    g_dbPod->exec("update tbl_char set fld_gold = " MIR2_STR_FORMAT_SIZE_T " where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(m_sdItemStorage.gold), to_llu(dbid()));
     reportGold();
 }
 

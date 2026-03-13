@@ -17,7 +17,7 @@ static constexpr int g_compLevel = 3;
 static std::vector<uint8_t> compressDataBuf(const uint8_t *dataBuf, size_t dataLen, ZSTD_CCtx *cctxPtr, const ZSTD_CDict *cdictPtr)
 {
     if(!(dataBuf && dataLen)){
-        throw fflerror("invalid arguments: dataBuf = %p, dataLen = %llu", to_cvptr(dataBuf), dataLen);
+        throw fflerror("invalid arguments: dataBuf = %p, dataLen = " MIR2_STR_FORMAT_SIZE_T, to_cvptr(dataBuf), dataLen);
     }
 
     size_t rc = 0;
@@ -44,7 +44,7 @@ static std::vector<uint8_t> compressDataBuf(const uint8_t *dataBuf, size_t dataL
 static std::vector<uint8_t> decompressDataBuf(const uint8_t *dataBuf, size_t dataLen, ZSTD_DCtx *dctxPtr, const ZSTD_DDict *ddictPtr)
 {
     if(!(dataBuf && dataLen)){
-        throw fflerror("invalid arguments: dataBuf = %p, dataLen = %llu", to_cvptr(dataBuf), dataLen);
+        throw fflerror("invalid arguments: dataBuf = %p, dataLen = " MIR2_STR_FORMAT_SIZE_T, to_cvptr(dataBuf), dataLen);
     }
 
     std::vector<uint8_t> result;
@@ -158,7 +158,7 @@ ZSDB::ZSDB(const char *filePath)
         const auto offset = check_cast<size_t>(m_header.dictOffset);
         const auto length = check_cast<size_t>(m_header.dictLength);
         if(const auto dictBuf = decompFileOffData(m_fp.get(), offset, length, m_DCtx, m_DDict); dictBuf.empty()){
-            throw fflerror("failed to load data at (off = %llu, length = %llu)", offset, length);
+            throw fflerror("failed to load data at (off = " MIR2_STR_FORMAT_SIZE_T ", length = " MIR2_STR_FORMAT_SIZE_T ")", offset, length);
         }
         else{
             m_DDict = ZSTD_createDDict(dictBuf.data(), dictBuf.size());
@@ -172,7 +172,7 @@ ZSDB::ZSDB(const char *filePath)
         const auto offset = check_cast<size_t>(m_header.entryOffset);
         const auto length = check_cast<size_t>(m_header.entryLength);
         if(const auto entryBuf = decompFileOffData(m_fp.get(), offset, length, m_DCtx, m_DDict); entryBuf.empty()){
-            throw fflerror("failed to load data at (off = %llu, length = %llu)", offset, length);
+            throw fflerror("failed to load data at (off = " MIR2_STR_FORMAT_SIZE_T ", length = " MIR2_STR_FORMAT_SIZE_T ")", offset, length);
         }
         else{
             if(entryBuf.size() != (1 + m_header.entryNum) * sizeof(InnEntry)){
@@ -195,7 +195,7 @@ ZSDB::ZSDB(const char *filePath)
         const auto offset = check_cast<size_t>(m_header.fileNameOffset);
         const auto length = check_cast<size_t>(m_header.fileNameLength);
         if(const auto fileNameBuf = decompFileOffData(m_fp.get(), offset, length, m_DCtx, nullptr); fileNameBuf.empty()){
-            throw fflerror("failed to load data at (off = %llu, length = %llu)", offset, length);
+            throw fflerror("failed to load data at (off = " MIR2_STR_FORMAT_SIZE_T ", length = " MIR2_STR_FORMAT_SIZE_T ")", offset, length);
         }
         else{
             const auto *headPtr = (char *)(fileNameBuf.data());

@@ -438,7 +438,7 @@ struct ClientMsgBuf final
         }
 
         if(!ClientMsg(headCode).checkData(data, size)){
-            throw fflerror("invalid data size, data %p, size %llu", (const void *)(data), size);
+            throw fflerror("invalid data size, data %p, size " MIR2_STR_FORMAT_SIZE_T, (const void *)(data), size);
         }
     }
 
@@ -480,7 +480,7 @@ struct ClientMsgBuf final
             return t;
         }
         else{
-            throw fflerror("failed to deserialize %llu bytes into %llu buffer", size, sizeof(T));
+            throw fflerror("failed to deserialize " MIR2_STR_FORMAT_SIZE_T " bytes into " MIR2_STR_FORMAT_SIZE_T " buffer", size, sizeof(T));
         }
     }
 };

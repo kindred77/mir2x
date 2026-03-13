@@ -228,7 +228,7 @@ void ItemListBoard::drawDefault(Widget::ROIMap m) const
 
     if(pageCount() > 0){
         fflassert(m_page < pageCount());
-        fnDrawTitle(str_printf(u8"第%llu/%llu页", (m_page + 1), pageCount()));
+        fnDrawTitle(str_printf(u8"第" MIR2_STR_FORMAT_SIZE_T "/" MIR2_STR_FORMAT_SIZE_T "页", (m_page + 1), pageCount()));
     }
     else{
         fnDrawTitle(u8"（空）");

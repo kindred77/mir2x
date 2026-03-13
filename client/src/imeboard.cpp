@@ -129,7 +129,7 @@ void IMEBoard::prepareLabelBoardList()
         if(!m_boardList[i]){
             m_boardList[i] = std::unique_ptr<LabelBoard>(new LabelBoard
             {{
-                .label = str_printf(u8"%llu. %s", i + 1 - m_startIndex, m_candidateList[i].c_str()).c_str(),
+                .label = str_printf(u8"" MIR2_STR_FORMAT_SIZE_T ". %s", i + 1 - m_startIndex, m_candidateList[i].c_str()).c_str(),
                 .font = m_font,
                 .parent{this},
             }});

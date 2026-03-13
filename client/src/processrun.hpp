@@ -329,7 +329,7 @@ class ProcessRun: public Process
             if(auto myHeroPtr = dynamic_cast<MyHero *>(findUID(getMyHeroUID()))){
                 return myHeroPtr;
             }
-            throw fflerror("failed to get MyHero pointer: uid = %llu", to_llu(getMyHeroUID()));
+            throw fflerror("failed to get MyHero pointer: uid = " MIR2_STR_FORMAT_SIZE_T, to_llu(getMyHeroUID()));
         }
 
         SDChatPeer getMyHeroChatPeer() const

@@ -192,7 +192,7 @@ PurchaseBoard::PurchaseBoard(ProcessRun *argProc, Widget *argParent, bool argAut
               }
 
               if(seqID != 0){
-                  throw fflerror("unexpected seqID = %llu", to_llu(seqID));
+                  throw fflerror("unexpected seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(seqID));
               }
 
               auto inputBoardPtr = dynamic_cast<InputStringBoard *>(m_processRun->getWidget("InputStringBoard"));
@@ -556,7 +556,7 @@ void PurchaseBoard::drawExt1(Widget::ROIMap m) const
     }
 
     if(m_ext1Page >= ext1PageCount){
-        throw fflerror("invalid ext1Page: ext1Page = %d, listSize = %llu", m_ext1Page, m_sdSellItemList.list.size());
+        throw fflerror("invalid ext1Page: ext1Page = %d, listSize = " MIR2_STR_FORMAT_SIZE_T, m_ext1Page, m_sdSellItemList.list.size());
     }
 
     const auto remapX = m.x - m.ro->x;
@@ -573,7 +573,7 @@ void PurchaseBoard::drawExt1(Widget::ROIMap m) const
             const auto &sellItem = m_sdSellItemList.list.at(i);
             const auto &ir = DBCOM_ITEMRECORD(sellItem.item.itemID);
             if(!ir){
-                throw fflerror("bad item in sell list: itemID = %llu, seqID = %llu", to_llu(sellItem.item.itemID), to_llu(sellItem.item.seqID));
+                throw fflerror("bad item in sell list: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(sellItem.item.itemID), to_llu(sellItem.item.seqID));
             }
 
             constexpr int rightStartX = m_ext1GridArea.x;
@@ -636,7 +636,7 @@ void PurchaseBoard::drawExt2(Widget::ROIMap m) const
 
     const auto [extItemID, extSeqID] = getExtSelectedItemSeqID();
     if(extSeqID){
-        throw fflerror("unexpected extSeqID: %llu", to_llu(extSeqID));
+        throw fflerror("unexpected extSeqID: " MIR2_STR_FORMAT_SIZE_T, to_llu(extSeqID));
     }
 
     drawChild(&m_buttonExt2Close , m);
@@ -649,7 +649,7 @@ void PurchaseBoard::drawExt2(Widget::ROIMap m) const
     const auto &sellItem = m_sdSellItemList.list.at(0);
     const auto &ir = DBCOM_ITEMRECORD(sellItem.item.itemID);
     if(!ir){
-        throw fflerror("bad item in sell list: itemID = %llu, seqID = %llu", to_llu(sellItem.item.itemID), to_llu(sellItem.item.seqID));
+        throw fflerror("bad item in sell list: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(sellItem.item.itemID), to_llu(sellItem.item.seqID));
     }
 
     drawItemInGrid(ir.type, ir.pkgGfxID, m_ext2GridArea.x, m_ext2GridArea.y, m);

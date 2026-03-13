@@ -297,7 +297,7 @@ void CreatureMovable::flushForcedMotion()
             case MOTION_DIE:
             case MOTION_MON_DIE:
                 {
-                    throw fflerror("can't flush dying CO: %llu", to_llu(UID()));
+                    throw fflerror("can't flush dying CO: " MIR2_STR_FORMAT_SIZE_T, to_llu(UID()));
                 }
             default:
                 {

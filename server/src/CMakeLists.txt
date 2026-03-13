@@ -30,8 +30,8 @@ ELSE()
     TARGET_LINK_LIBRARIES(server ${ACO_LIBRARIES})
 ENDIF()
 
-if(WIN32)
-    target_compile_definitions(server PRIVATE
+IF(WIN32 AND NOT MSVC)
+    TARGET_COMPILE_DEFINITIONS(server PRIVATE
             # 适配 Windows 7 及以上（最常用，兼容绝大多数场景）
             _WIN32_WINNT=0x0601
             # 可选：补充定义，避免重复警告
@@ -39,12 +39,9 @@ if(WIN32)
             NO_WINSOCK
             WIN32_LEAN_AND_MEAN
     )
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
-endif()
-
-if(WIN32)
-    target_link_libraries(server ws2_32 dbghelp ${SDL2_LIBRARIES})
-endif()
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+    TARGET_LINK_LIBRARIES(server ws2_32 dbghelp ${SDL2_LIBRARIES})
+ENDIF()
 
 print_target_link_libraries(server)
 

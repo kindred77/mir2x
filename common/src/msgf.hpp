@@ -35,7 +35,7 @@ namespace msgf
                     {
                         // empty, shouldn't have any content
                         if(dataLen){
-                            throw fflerror("invalid dataLen: %llu", dataLen);
+                            throw fflerror("invalid dataLen: " MIR2_STR_FORMAT_SIZE_T, dataLen);
                         }
                         break;
                     }
@@ -44,7 +44,7 @@ namespace msgf
                         // not empty, fixed size, compressed
                         // support maxCompLen = 0b_1111111_1111111_1111111_1111111, abort if bigger than it
                         if(!(dataLen > 0 && dataLen < (1uz << 4 * 7))){
-                            throw fflerror("invalid dataLen: %llu", dataLen);
+                            throw fflerror("invalid dataLen: " MIR2_STR_FORMAT_SIZE_T, dataLen);
                         }
                         break;
                     }
@@ -53,7 +53,7 @@ namespace msgf
                         // not empty, fixed size, not compressed
                         // used for small messages that even xor compress is too much
                         if(!dataLen){
-                            throw fflerror("invalid dataLen: %llu", dataLen);
+                            throw fflerror("invalid dataLen: " MIR2_STR_FORMAT_SIZE_T, dataLen);
                         }
                         break;
                     }
@@ -62,7 +62,7 @@ namespace msgf
                         // not empty, not fixed size, not compressed
                         // dataLen should be zero to indicate it's not fixed size message
                         if(dataLen){
-                            throw fflerror("invalid dataLen: %llu", dataLen);
+                            throw fflerror("invalid dataLen: " MIR2_STR_FORMAT_SIZE_T, dataLen);
                         }
                         break;
                     }
@@ -201,7 +201,7 @@ namespace msgf
         }
 
         if(length > 0){
-            throw fflerror("buffer can not hold length bits, bufSize %llu, length %llu", bufSize, length);
+            throw fflerror("buffer can not hold length bits, bufSize " MIR2_STR_FORMAT_SIZE_T ", length " MIR2_STR_FORMAT_SIZE_T, bufSize, length);
         }
         return bytes;
     }

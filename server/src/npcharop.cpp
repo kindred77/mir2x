@@ -16,7 +16,7 @@ corof::awaitable<> NPChar::on_AM_ACTION(const ActorMsgPack &mpk)
     switch(uidf::getUIDType(amA.UID)){
         case UID_PLY:
             {
-                m_luaRunner->spawn(amA.UID, str_printf("_RSVD_NAME_trigger(SYS_ON_APPEAR, %llu)", to_llu(amA.UID)));
+                m_luaRunner->spawn(amA.UID, str_printf("_RSVD_NAME_trigger(SYS_ON_APPEAR, " MIR2_STR_FORMAT_SIZE_T ")", to_llu(amA.UID)));
                 dispatchAction(amA.UID, makeActionStand());
                 return {};
             }
@@ -68,7 +68,7 @@ corof::awaitable<> NPChar::on_AM_NPCEVENT(const ActorMsgPack &mpk)
         m_luaRunner->close(mpk.from(), seqID);
     }
 
-    m_luaRunner->spawn(mpk.from(), str_printf("return _RSVD_NAME_npc_main(%llu, %s, %s, %s)",
+    m_luaRunner->spawn(mpk.from(), str_printf("return _RSVD_NAME_npc_main(" MIR2_STR_FORMAT_SIZE_T ", %s, %s, %s)",
                 to_llu(mpk.from()),
 
                 sdNPCE.path .empty() ? "nil" : luaf::quotedLuaString(sdNPCE.path ).c_str(),
@@ -168,7 +168,7 @@ corof::awaitable<> NPChar::on_AM_BUY(const ActorMsgPack &mpk)
     const auto amB = mpk.conv<AMBuy>();
     const auto &ir = DBCOM_ITEMRECORD(amB.itemID);
     if(!ir){
-        throw fflerror("invalid itemID = %llu", to_llu(amB.itemID));
+        throw fflerror("invalid itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(amB.itemID));
     }
 
     if(!ir.packable() && amB.count > 1){
@@ -205,17 +205,17 @@ corof::awaitable<> NPChar::on_AM_BUY(const ActorMsgPack &mpk)
     {
         const auto &ir = DBCOM_ITEMRECORD(amB.itemID);
         if(!ir){
-            throw fflerror("invalid itemID = %llu", to_llu(amB.itemID));
+            throw fflerror("invalid itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(amB.itemID));
         }
 
         auto p = m_sellItemList.find(amB.itemID);
         if(p == m_sellItemList.end()){
-            throw fflerror("no item selling: itemID = %llu", to_llu(amB.itemID));
+            throw fflerror("no item selling: itemID = " MIR2_STR_FORMAT_SIZE_T, to_llu(amB.itemID));
         }
 
         auto q = p->second.find(ir.packable() ? 0 : amB.seqID);
         if(q == p->second.end()){
-            throw fflerror("no item selling: itemID = %llu, seqID = %llu", to_llu(amB.itemID), to_llu(amB.seqID));
+            throw fflerror("no item selling: itemID = " MIR2_STR_FORMAT_SIZE_T ", seqID = " MIR2_STR_FORMAT_SIZE_T, to_llu(amB.itemID), to_llu(amB.seqID));
         }
 
         if(!ir.packable()){

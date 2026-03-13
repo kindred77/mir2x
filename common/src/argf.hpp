@@ -206,7 +206,7 @@ namespace argf
 
     constexpr auto checkMapID = [](const char *name, uint32_t mapID)
     {
-        if(!DBCOM_MAPRECORD(mapID)) throw fflerror("invalid %smap id: %llu", _details::strAppendSpace(name).c_str(), to_llu(mapID));
+        if(!DBCOM_MAPRECORD(mapID)) throw fflerror("invalid %smap id: " MIR2_STR_FORMAT_SIZE_T, _details::strAppendSpace(name).c_str(), to_llu(mapID));
         return mapID;
     };
 

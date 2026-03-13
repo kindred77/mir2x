@@ -73,7 +73,7 @@ corof::awaitable<> ServiceCore::net_CM_QUERYCHAR(uint32_t channID, uint8_t, cons
         return {};
     }
 
-    auto queryChar = g_dbPod->createQuery("select * from tbl_char where fld_dbid = %llu", to_llu(dbidOpt.value().first));
+    auto queryChar = g_dbPod->createQuery("select * from tbl_char where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbidOpt.value().first));
     if(!queryChar.executeStep()){
         fnQueryCharError(QUERYCHARERR_NOCHAR);
         return {};
@@ -111,7 +111,7 @@ corof::awaitable<> ServiceCore::net_CM_ONLINE(uint32_t channID, uint8_t, const u
         co_return;
     }
 
-    auto queryChar = g_dbPod->createQuery("select * from tbl_char where fld_dbid = %llu", to_llu(dbidOpt.value().first));
+    auto queryChar = g_dbPod->createQuery("select * from tbl_char where fld_dbid = " MIR2_STR_FORMAT_SIZE_T, to_llu(dbidOpt.value().first));
     if(!queryChar.executeStep()){
         fnOnlineError(ONLINEERR_NOCHAR);
         co_return;
@@ -252,13 +252,13 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
         return {};
     }
 
-    auto queryPassword = g_dbPod->createQuery(u8R"###( select * from tbl_account where fld_dbid = %llu and fld_password = '%s' )###", to_llu(dbidOpt.value().first), cmDC.password.as_cstr());
+    auto queryPassword = g_dbPod->createQuery(u8R"###( select * from tbl_account where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( and fld_password = '%s' )###", to_llu(dbidOpt.value().first), cmDC.password.as_cstr());
     if(!queryPassword.executeStep()){
         fnDeleteCharError(DELCHARERR_BADPASSWORD);
         return {};
     }
 
-    auto query = g_dbPod->createQuery(u8R"###( delete from tbl_char where fld_dbid = %llu returning fld_dbid )###", to_llu(dbidOpt.value().first));
+    auto query = g_dbPod->createQuery(u8R"###( delete from tbl_char where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( returning fld_dbid )###", to_llu(dbidOpt.value().first));
     if(!query.executeStep()){
         fnDeleteCharError(DELCHARERR_NOCHAR);
         return {};
@@ -267,7 +267,7 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
     const auto dbidDeleted = check_cast<uint32_t, unsigned>(query.getColumn("fld_dbid"));
     fflassert(dbidDeleted == dbidOpt.value().first);
 
-    g_dbPod->exec(u8R"###( delete from tbl_learnedmagiclist where fld_dbid = %llu returning fld_dbid )###", to_llu(dbidOpt.value().first));
+    g_dbPod->exec(u8R"###( delete from tbl_learnedmagiclist where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( returning fld_dbid )###", to_llu(dbidOpt.value().first));
     auto maxSeqID = [dbidOpt]() -> uint32_t
     {
         auto querySeqID = g_dbPod->createQuery(
@@ -276,9 +276,9 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
                 u8R"###( from                                                                             )###"
                 u8R"###(     tbl_inventory                                                                )###"
                 u8R"###( where                                                                            )###"
-                u8R"###(     fld_dbid = %llu                                                              )###"
+                u8R"###(     fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###(                                                              )###"
                 u8R"###( and                                                                              )###"
-                u8R"###(     fld_seqid = (select max(fld_seqid) from tbl_inventory where fld_dbid = %llu) )###",
+                u8R"###(     fld_seqid = (select max(fld_seqid) from tbl_inventory where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###() )###",
 
                 to_llu(dbidOpt.value().first),
                 to_llu(dbidOpt.value().first));
@@ -301,7 +301,7 @@ corof::awaitable<> ServiceCore::net_CM_DELETECHAR(uint32_t channID, uint8_t, con
         u8R"###( values                                                                                                                )###"
     };
 
-    auto queryBelt = g_dbPod->createQuery(u8R"###( delete from tbl_belt where fld_dbid = %llu returning * )###", to_llu(dbidOpt.value().first));
+    auto queryBelt = g_dbPod->createQuery(u8R"###( delete from tbl_belt where fld_dbid = )###" MIR2_STR_FORMAT_SIZE_T u8R"###( returning * )###", to_llu(dbidOpt.value().first));
     while(queryBelt.executeStep()){
         if(insertedBeltItemCount > 0){
             insertQueryBeltString += u8",";

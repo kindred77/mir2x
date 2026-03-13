@@ -265,7 +265,7 @@ corof::awaitable<> Player::net_CM_QUERYUIDBUFF(uint8_t, const uint8_t *buf, size
                 }
             default:
                 {
-                    throw fflerror("invalid uid: %llu, type: %s", to_llu(cmQUIDB.uid), uidf::getUIDTypeCStr(cmQUIDB.uid));
+                    throw fflerror("invalid uid: " MIR2_STR_FORMAT_SIZE_T ", type: %s", to_llu(cmQUIDB.uid), uidf::getUIDTypeCStr(cmQUIDB.uid));
                 }
         }
     }
@@ -308,7 +308,7 @@ corof::awaitable<> Player::net_CM_QUERYPLAYERWLDESP(uint8_t, const uint8_t *buf,
         m_actorPod->post(cmQPWLD.uid, AM_QUERYPLAYERWLDESP);
     }
     else{
-        throw fflerror("invalid uid: %llu, type: %s", to_llu(cmQPWLD.uid), uidf::getUIDTypeCStr(cmQPWLD.uid));
+        throw fflerror("invalid uid: " MIR2_STR_FORMAT_SIZE_T ", type: %s", to_llu(cmQPWLD.uid), uidf::getUIDTypeCStr(cmQPWLD.uid));
     }
     return {};
 }

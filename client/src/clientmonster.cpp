@@ -94,7 +94,7 @@ ClientMonster::ClientMonster(uint64_t uid, ProcessRun *proc)
 {
     fflassert(uidf::getUIDType(uid) == UID_MON, uidf::getUIDString(uid));
     if(g_clientArgParser->drawUID){
-        m_nameBoard.setText(u8"%s(%llu)", DBCOM_MONSTERRECORD(monsterID()).name, to_llu(UID()));
+        m_nameBoard.setText(u8"%s(" MIR2_STR_FORMAT_SIZE_T ")", DBCOM_MONSTERRECORD(monsterID()).name, to_llu(UID()));
     }
     else{
         m_nameBoard.setText(u8"%s", DBCOM_MONSTERRECORD(monsterID()).name);

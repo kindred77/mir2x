@@ -75,10 +75,10 @@ ELSE()
 #    TARGET_LINK_LIBRARIES(client ${SDL2_LIBRARIES})
 ENDIF()
 
-if(WIN32)
-    target_link_libraries(client ws2_32 dbghelp)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
-endif()
+IF(WIN32 AND NOT MSVC)
+    TARGET_LINK_LIBRARIES(client ws2_32 dbghelp)
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+ENDIF()
 
 print_target_link_libraries(client)
 
