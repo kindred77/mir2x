@@ -33,5 +33,6 @@ ExternalProject_Add_Step(
     DEPENDERS download
 )
 
-SET(MIR2X_DATA_REPO_PATH "${MIR2X_3RD_PARTY_DIR}/mir2x_data")
+#SET(MIR2X_DATA_REPO_PATH "${MIR2X_3RD_PARTY_DIR}/mir2x_data")
+SET(MIR2X_DATA_REPO_PATH "${CMAKE_SOURCE_DIR}/mir2x_data")
 ADD_DEPENDENCIES(mir2x_3rds mir2x_data)
