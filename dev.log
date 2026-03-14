@@ -26,3 +26,17 @@ NO_WINSOCK
 WIN32_LEAN_AND_MEAN
 
 serverluacoroutinerunner.cpp中使用类私有解态函数concatCode会导致gcc bug崩溃，把这个函数从类中提取出来解决。
+
+
+Linux(ubuntu):
+install packages below:
+libx11-dev
+libxext-dev
+libwayland-dev
+libasound2-dev
+libasound2t64
+注意使用vcpkg安装的SDL2可能默认不会启用alsa，也就是SDL_ALSA=OFF，需要手动改一下：
+/home/kindred/mywork/projects/cpp/vcpkg/ports/sdl2/portfile.cmake在vcpkg_cmake_configure中添加-DSDL_ALSA=ON
+
+sdl2-mixer默认不支持mp3，用vcpkg安装：
+vcpkg install sdl2-mixer[mpg123]
