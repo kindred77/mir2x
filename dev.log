@@ -40,3 +40,9 @@ libasound2t64
 
 sdl2-mixer默认不支持mp3，用vcpkg安装：
 vcpkg install sdl2-mixer[mpg123]
+
+for client debug:
+
+--server-ip=127.0.0.1
+--res-path=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/res
+--input-script=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/script
