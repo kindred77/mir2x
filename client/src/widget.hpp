@@ -299,7 +299,7 @@ class Widget: public WidgetTreeNode
             //
             // when using id 11, please use pt 15 only
 
-            uint8_t id    = 11; // default font
+            uint8_t id    = 5; // default font
             uint8_t size  = 15;
             uint8_t style =  0;
 

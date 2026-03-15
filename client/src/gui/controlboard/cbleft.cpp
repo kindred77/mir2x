@@ -279,7 +279,7 @@ CBLeft::CBLeft(
 
           .font
           {
-              .id = 10,
+              .id = 05,
               .size = 15,
           },
       }}
