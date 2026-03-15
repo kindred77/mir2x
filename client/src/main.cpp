@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         if(g_clientArgParser->disableProfiler){
             logDisableProfiler();
         }
-        g_log = new Log("mir2x-client-v0.1");
+        g_log = new Log("mir-client");
 
     }
     catch(const std::exception &e){
