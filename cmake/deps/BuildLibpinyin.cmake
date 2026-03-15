@@ -2,6 +2,8 @@ IF(NOT MIR2X_BUILD_LIBPINYIN)
     RETURN()
 ENDIF()
 
+MESSAGE(STATUS "Begin to build libpinyin...")
+
 INCLUDE(FetchContent)
 
 FetchContent_Declare(
@@ -18,7 +20,7 @@ FetchContent_MakeAvailable(libdb)
 IF(NOT DEFINED libdb_CONFIGURED)
     MESSAGE(STATUS "Configuring libdb")
     EXECUTE_PROCESS(
-        COMMAND ${libdb_SOURCE_DIR}/dist/configure --prefix=${MIR2X_3RD_PARTY_DIR}/libdb/build --enable-shared=no
+        COMMAND ${libdb_SOURCE_DIR}/dist/configure --enable-fcntlmutex --prefix=${MIR2X_3RD_PARTY_DIR}/libdb/build --enable-shared=no
         WORKING_DIRECTORY ${libdb_BINARY_DIR}
 
         RESULT_VARIABLE libdb_CONFIGURED
@@ -44,13 +46,13 @@ ENDIF()
 FetchContent_Declare(
     libpinyin
 
-    GIT_REPOSITORY https://github.com/libpinyin/libpinyin.git
+    GIT_REPOSITORY https://github.com/kindred77/libpinyin.git
     GIT_TAG        main
 
     GIT_PROGRESS 1
 )
 
-FetchContent_MakeAvailable(libpinyin)
+#FetchContent_MakeAvailable(libpinyin)
 
 IF(NOT DEFINED libpinyin_CONFIGURED)
     MESSAGE(STATUS "Configuring libpinyin")
