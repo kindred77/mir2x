@@ -28,8 +28,8 @@ int main(int argc, char* argv[]) {
     // 开启文本输入（必须在窗口创建后）
     SDL_StartTextInput();
     // 设置IME候选框位置（必须在窗口可视区域内）
-    //SDL_Rect ime_rect = {0, 0, 0, 0}; // x=50,y=50 是窗口内坐标
-    //SDL_SetTextInputRect(&ime_rect);
+    SDL_Rect ime_rect = {0, 0, 0, 0}; // x=50,y=50 是窗口内坐标
+    SDL_SetTextInputRect(&ime_rect);
 
     // 4. 事件循环（仅处理退出和文本输入）
     bool running = true;
