@@ -40,7 +40,7 @@ ProcessLogin::ProcessLogin()
 
               .w = 146,
               .h =  18,
-
+              .enableIME = true,
               .font
               {
                   .id = 2,

@@ -47,7 +47,15 @@ InputLine::InputLine(InputLine::InitArgs args)
     , m_onCR    (std::move(args.onCR))
     , m_onChange(std::move(args.onChange))
     , m_validate(std::move(args.validate))
-{}
+{
+    if (Widget::evalBool(m_imeEnabled, this)) {
+        SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
+        SDL_StartTextInput();
+        SDL_Rect ime_rect = {50, 50, 0, 0};
+        SDL_SetTextInputRect(&ime_rect);
+    }
+
+}
 
 bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::ROIMap m)
 {
@@ -169,6 +177,20 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::
                 }
 
                 return consumeFocus(true);
+            }
+        case SDL_TEXTINPUT:
+            {
+                if (Widget::evalBool(m_imeEnabled, this)) {
+                    auto &&in_str = std::string(event.text.text);
+                    m_tpset.insertUTF8String(m_cursor, 0, str_printf("%s", in_str.c_str()).c_str());
+                    if(m_onChange){
+                        m_onChange(m_tpset.getRawString());
+                    }
+                    m_cursor += utf8::distance(in_str.begin(), in_str.end());
+                    m_cursorBlink = 0.0;
+                    return true;
+                }
+                return false;
             }
         default:
             {
