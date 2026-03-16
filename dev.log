@@ -47,7 +47,7 @@ for client debug:
 --res-path=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/res
 --input-script=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/script
 
-ubuntu安装linpinyin:
+* ubuntu安装linpinyin:
 先安装berkeleydb: git@github.com:kindred77/berkeleydb.git
 安装完成后编译libpinyin:
 注释掉CMakeLists.txt中的find_package(BerkeleyDB)，然后：

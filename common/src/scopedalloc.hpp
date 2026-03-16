@@ -9,8 +9,7 @@
 #include <stdexcept>
 #include "fflerror.hpp"
 
-#if defined(_WIN32) || defined(_WIN64)
-#   define OS_WINDOWS 1
+#ifdef OS_WINDOWS
 #include <malloc.h>
 #endif
 
@@ -104,7 +103,11 @@ namespace scoped_alloc
 
     inline void free_overalign(char *p)
     {
+#if OS_WINDOWS
+        _aligned_free(p);
+#else
         free(p);
+#endif
     }
 #endif
 

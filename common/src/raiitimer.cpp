@@ -2,10 +2,6 @@
 #include "fflerror.hpp"
 #include "raiitimer.hpp"
 
-#if defined(_WIN32) || defined(_WIN64)
-#   define OS_WINDOWS 1
-#endif
-
 // for QueryPerformanceFrequency(), the doc suggests to cache the result:
 // https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency
 
