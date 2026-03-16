@@ -11,11 +11,9 @@
 inline auto make_fileptr_helper(const char *path, const char *mode)
 {
 #ifdef OS_WINDOWS
-    std::filesystem::path path_wstr(path);
-    std::filesystem::path mode_wstr(mode);
-    if(auto fp = _wfopen(path_wstr.c_str(), mode_wstr.c_str()); fp){
+    if(auto fp = _wfopen(std::filesystem::path(path).c_str(), std::filesystem::path(mode).c_str()); fp){
 #else
-    if(auto fp = std::fopen(path_wstr.c_str(), mode); fp){
+    if(auto fp = std::fopen(path, mode); fp){
 #endif
         constexpr auto fileptr_deleter = [](std::FILE *fp)-> void
         {
