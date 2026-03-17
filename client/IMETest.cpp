@@ -155,6 +155,10 @@ int main(int argc, char* argv[]) {
          else {
              ret = ImGui::InputTextWithHint("##", "this is hint", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue/* , InputTextCallback, &cb_user_data */);
          }
+         if (ret) {
+             SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "-----%s-----", buf);
+            std::cout << "-------" << buf << std::endl;
+         }
          ImGui::PopFont();
          ImGui::End();
 
