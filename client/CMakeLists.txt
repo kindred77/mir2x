@@ -1,7 +1,18 @@
 ADD_SUBDIRECTORY(src)
 
-ADD_EXECUTABLE(IMETest IMETest.cpp)
+ADD_EXECUTABLE(IMETest
+        IMETest.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_tables.cpp
+        imgui/imgui_widgets.cpp
+        imgui/imgui.cpp
+        imgui/backends/imgui_impl_sdl2.cpp
+        imgui/backends/imgui_impl_sdlrenderer2.cpp
+)
 ADD_DEPENDENCIES(IMETest mir2x_3rds)
+
+TARGET_INCLUDE_DIRECTORIES(IMETest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+TARGET_INCLUDE_DIRECTORIES(IMETest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends)
 
 TARGET_LINK_LIBRARIES(IMETest
         ${SDL2_LIBRARIES}
