@@ -342,6 +342,11 @@ class SDLDevice final
            return m_renderer;
        }
 
+       SDL_Window *getWindow()
+       {
+           return m_window;
+       }
+
     public:
        SDL_Texture *createTextureFromSurface(SDL_Surface * surfPtr)
        {

@@ -1,5 +1,5 @@
 MIR2X_LIST_SOURCE_RECURSIVE(CLIENT_SRCS)
-ADD_EXECUTABLE(client ${CLIENT_SRCS})
+ADD_EXECUTABLE(client ${CLIENT_SRCS} ${IMGUI_SOURCE})
 ADD_DEPENDENCIES(client mir2x_3rds)
 
 # can not use ExternalProject_Add() to add libpinyin as dependency
@@ -25,6 +25,7 @@ ADD_DEPENDENCIES(client mir2x_3rds)
 #PKG_CHECK_MODULES(LIBPINYIN REQUIRED libpinyin)
 TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${MIR2X_COMMON_SOURCE_DIR})
 TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+TARGET_INCLUDE_DIRECTORIES(client PRIVATE ${IMGUI_HEAD_DIR})
 
 # subdirs needs explicitly includes headers from client/src
 # otherwise easy to cause issue for headers with same file name

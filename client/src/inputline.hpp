@@ -5,6 +5,9 @@
 #include "xmltypeset.hpp"
 #include "ime.hpp"
 
+class ImGuiContext;
+typedef int ImGuiWindowFlags;
+class ImFont;
 class InputLine: public Widget
 {
     public:
@@ -39,7 +42,10 @@ class InputLine: public Widget
 
     protected:
         Widget::VarBool m_imeEnabled;
-
+        ImGuiContext* m_imgui_context = nullptr;
+        ImGuiWindowFlags m_window_flags = 0;
+        char m_input_buf[64]{0};
+        ImFont* m_font = nullptr;
     protected:
         XMLTypeset m_tpset;
 
