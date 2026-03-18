@@ -75,7 +75,7 @@ InputLine::InputLine(InputLine::InitArgs args)
         static bool no_resize = true;
         static bool no_collapse = true;
         static bool no_nav = true;
-        static bool no_background = true;
+        static bool no_background = false;
         static bool no_bring_to_front = true;
         static bool unsaved_document = true;
         static bool no_saved_settings = true;
@@ -95,7 +95,7 @@ InputLine::InputLine(InputLine::InitArgs args)
         if (no_saved_settings)   m_window_flags |= ImGuiWindowFlags_NoSavedSettings;
         //if (no_close)           p_open = NULL;
 
-        //ImGui::SetNextWindowPos(ImVec2(300, 700), ImGuiCond_FirstUseEver);
+        //ImGui::SetNextWindowPos(ImVec2(159, 400), ImGuiCond_FirstUseEver);
         //ImGui::SetNextWindowSize(ImVec2(146, 18), ImGuiCond_FirstUseEver);
         // const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
         // ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
@@ -103,7 +103,7 @@ InputLine::InputLine(InputLine::InitArgs args)
 
         ImGuiStyle* style = &ImGui::GetStyle();
         ImVec4* colors = style->Colors;
-        colors[ImGuiCol_FrameBg] = ImVec4(0, 0, 0, 255);
+        colors[ImGuiCol_FrameBg] = ImVec4(100, 0, 0, 255);
         colors[ImGuiCol_Text] = ImVec4(255, 255, 255, 255);
         //std::memset(m_input_buf, 0, sizeof(m_input_buf));
         ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -111,7 +111,7 @@ InputLine::InputLine(InputLine::InitArgs args)
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         io.ConfigInputTextCursorBlink=true;
-        m_font = io.Fonts->AddFontFromFileTTF("C:/mywork/projects/cpp/mir2x/cmake-build-debug-mingwgcc/install/client/res/font/05_NSIMSUN.TTF", 15, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+        m_font = io.Fonts->AddFontFromFileTTF("/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/res/font/05_NSIMSUN.TTF", 15, nullptr, io.Fonts->GetGlyphRangesChineseFull());
         IM_ASSERT(m_font != nullptr);
         io.Fonts->Build();
     }
@@ -315,6 +315,11 @@ void InputLine::drawDefault(Widget::ROIMap m) const
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+        ImGui::SetCursorPos(ImVec2(159, 400));
+        ImGui::Dummy(ImVec2(159, 400));
+        ImGui::SetNextItemWidth(146);
+
+
         bool ret = ImGui::Begin("##", NULL, m_window_flags);
         if (!ret) {
             std::cerr << "ImGui::Begin failed: " << SDL_GetError() << std::endl;
@@ -324,7 +329,7 @@ void InputLine::drawDefault(Widget::ROIMap m) const
         ImGui::PushFont(m_font);
         //ImGui::SetCursorPos(ImVec2(dstCropX, dstCropY));
         //ImGui::SetNextItemWidth(srcCropW);
-        ImGui::SetCursorPos(ImVec2(159, 475));
+        ImGui::SetCursorPos(ImVec2(0, 0));
         ImGui::SetNextItemWidth(146);
         ImGuiInputTextCallbackData cb_user_data;
 
@@ -345,6 +350,7 @@ void InputLine::drawDefault(Widget::ROIMap m) const
         ImDrawData * drawData = ImGui::GetDrawData();
         ImGui_ImplSDLRenderer2_RenderDrawData(drawData, g_sdlDevice->getRenderer());
 
+        g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), m.x, m.y, w(), h());
         return;
     }
 
@@ -378,9 +384,9 @@ void InputLine::drawDefault(Widget::ROIMap m) const
         g_sdlDevice->fillRectangle(Widget::evalU32(m_cursorArgs.color, this), cursorX, cursorY, cursorW, cursorH);
     }
 
-    if(g_clientArgParser->debugDrawInputLine){
+    //if(g_clientArgParser->debugDrawInputLine){
         g_sdlDevice->drawRectangle(colorf::BLUE + colorf::A_SHF(255), m.x, m.y, w(), h());
-    }
+    //}
 }
 
 void InputLine::deleteChar()
