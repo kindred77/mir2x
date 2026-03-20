@@ -47,8 +47,21 @@ for client debug:
 --res-path=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/res
 --input-script=/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/script
 
-* ubuntu安装linpinyin:
-先安装berkeleydb: git@github.com:kindred77/berkeleydb.git
+pacman搜索：
+pacman -Ss liblzo
+pacman -S msys/liblzo2-devel
+
+* windows安装linpinyin:
+先用vs2022手动编译安装berkeleydb: git@github.com:kindred77/berkeleydb.git
+再用vcpkg安装vcpkg install glib --triplet=x64-mingw-static
 安装完成后编译libpinyin:
 注释掉CMakeLists.txt中的find_package(BerkeleyDB)，然后：
 cmake -G "Ninja" -DDB_FOUND=TRUE -DDB_INCLUDE_DIR=/home/kindred/software/berkeleydb/include -DDB_LIBRARIES=/home/kindred/software/berkeleydb/lib/libdb.a -DCMAKE_INSTALL_PREFIX=/home/kindred/software/libpinyin ..
+
+cmake -G"Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/mywork/projects/cpp/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-static -DCMAKE_INSTALL_PREFIX=c:/mywork/projects/cpp/libpinyin/install -DDB_FOUND=TRUE -DDB_INCLUDE_DIR=C:/mywork/projects/cpp/berkeleydb/build_windows -DDB_LIBRARIES=C:/mywork/projects/cpp/berkeleydb/build_windows/x64/Release
+
+RIME测试:
+rime可以在msys里安装
+pacman -S mingw64/mingw-w64-x86_64-marisa
+pacman -S mingw64/mingw-w64-x86_64-librime mingw64/mingw-w64-x86_64-librime-data
+pacman -Ql mingw64/mingw-w64-x86_64-librime
