@@ -1,6 +1,6 @@
-IF(NOT MIR2X_BUILD_LIBRIME)
+#IF(NOT MIR2X_BUILD_LIBRIME)
     RETURN()
-ENDIF()
+#ENDIF()
 
 MESSAGE(STATUS "Begin to build librime...")
 
