@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigInputTextCursorBlink=true;
-    ImFont* font = io.Fonts->AddFontFromFileTTF("C:/mywork/projects/cpp/mir2x/cmake-build-debug-mingwgcc/install/client/res/font/05_NSIMSUN.TTF", 15, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+    ImFont* font = io.Fonts->AddFontFromFileTTF("/home/kindred/mywork/projects/cpp/mir2x/cmake-build-debug/install/client/res/font/05_NSIMSUN.TTF", 15, nullptr, io.Fonts->GetGlyphRangesChineseFull());
     IM_ASSERT(font != nullptr);
     io.Fonts->Build();
 

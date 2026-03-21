@@ -5,145 +5,151 @@
 #include <cstring>
 #include <unistd.h>
 
-// static void RimeStatusHandler(void* context, RimeStatus* status) {
-//     if (!status) {
-//         std::cout << "Status: " << status->schema_id
-//         << (status->is_disabled ? "disabled" : "enabled")
-//         << std::endl;
-//     }
-// }
-
-// static void RimeNotificationHandler(void* context_object,
-//                                         RimeSessionId session_id,
-//                                         const char* message_type,
-//                                         const char* message_value) {
-//     if (!msg) return;
-//     std::cout << "Notification: " << msg->message << std::endl;
-// }
-
-void test() {
-    RimeApi* ime_api = rime_get_api();
-    RimeTraits traits{0};
-    traits.shared_data_dir = "";
-    traits.user_data_dir = "";
-    traits.distribution_name = "rime_demo";
-    traits.distribution_code_name = "rime_demo";
-    traits.distribution_version = "1.0";
-    traits.app_name = "rime_demo";
-    std::cout << "Rime initialize..." << std::endl;
-    ime_api->initialize(&traits);
-
-    RimeSessionId session = ime_api->create_session();
-    if (!session) {
-        std::cerr << "❌ 创建 RIME 会话失败！" << std::endl;
-        ime_api->finalize();
-        return;
+void on_message([[maybe_unused]] void* context_object,
+                RimeSessionId session_id,
+                const char* message_type,
+                const char* message_value) {
+    printf("message: [%zu] [%s] %s\n", session_id, message_type, message_value);
+    RimeApi* rime = rime_get_api();
+    if (RIME_API_AVAILABLE(rime, get_state_label) &&
+        !strcmp(message_type, "option")) {
+        Bool state = message_value[0] != '!';
+        const char* option_name = message_value + !state;
+        const char* state_label =
+            rime->get_state_label(session_id, option_name, state);
+        if (state_label) {
+            printf("updated option: %s = %d // %s\n", option_name, state,
+                   state_label);
+        }
     }
-    const char* keys = "nihao";
-    for (const char* p = keys; *p; ++p) {
-        ime_api->process_key(session, *p, 0);
-    }
-    //RimeComposition composition{0};
-    //RimeMenu menu{0};
-    if (!ime_api->select_candidate(session, 0)) {
-
-    }
-
-
 }
 
-// void test2() {
-//     // ===================== 1. 初始化参数（兼容不同版本） =====================
-//     RimeTraits traits;
-//     // 清空结构体（避免随机值导致初始化失败）
-//     memset(&traits, 0, sizeof(RimeTraits));
-//     // 词库目录（pacman 安装的默认路径，务必确认存在）
-//     traits.shared_data_dir = "/usr/share/rime-data";
-//     // 用户数据目录（自动创建，无需提前建）
-//     traits.user_data_dir = "./rime_user_data";
-//     traits.distribution_name = "rime_demo";
-//     traits.distribution_version = "1.0";
-//
-//     // ===================== 2. 初始化引擎（核心函数） =====================
-//     std::cout << "正在初始化 RIME 引擎...\n";
-//     RimeInitialize(&traits);
-//     // if (!RimeInitialize(&traits)) {
-//     //     std::cerr << "❌ RIME 初始化失败！检查词库路径：" << traits.shared_data_dir << std::endl;
-//     //     return -1;
-//     // }
-//     std::cout << "✅ RIME 引擎初始化成功\n";
-//
-//     // ===================== 3. 创建会话 =====================
-//     RimeSessionId session = RimeCreateSession();
-//     if (!session) {
-//         std::cerr << "❌ 创建 RIME 会话失败！" << std::endl;
-//         RimeFinalize();
-//         return;
-//     }
-//
-//     // ===================== 4. 切换拼音方案（先安装 rime-data-luna-pinyin） =====================
-//     // 先检查拼音方案文件是否存在
-//     if (access("C:/software/msys64/mingw64/share/rime-data/luna_pinyin.schema.yaml", F_OK) != 0) {
-//         std::cerr << "❌ 未找到拼音方案！请执行：sudo pacman -S rime-data-luna-pinyin" << std::endl;
-//         RimeDestroySession(session);
-//         RimeFinalize();
-//         return;
-//     }
-//
-//     //RimeSchema schema;
-//     //memset(&schema, 0, sizeof(RimeSchema));
-//     //schema.schema_id = "luna_pinyin";  // 朙月拼音方案
-//     if (!RimeSelectSchema(session, "luna_pinyin")) {
-//         std::cerr << "❌ 切换拼音方案失败！" << std::endl;
-//         RimeDestroySession(session);
-//         RimeFinalize();
-//         return;
-//     }
-//     std::cout << "✅ 已切换到【朙月拼音】方案\n";
-//
-//     // ===================== 5. 模拟输入 "nihao" =====================
-//     std::string input = "nihao";
-//     std::cout << "\n输入编码：" << input << "\n";
-//     for (char c : input) {
-//         // 模拟按键输入（第二个参数是字符，第三个是修饰符（0=无））
-//         RimeProcessKey(session, c, 0);
-//     }
-//     usleep(200000);
-//
-//     // ===================== 6. 获取候选词 =====================
-//     std::vector<std::string> candidates;
-//     RimeCandidateListIterator iterator;
-//     if (!RimeCandidateListBegin(session, &iterator)) {
-//         std::cerr << "遍历候选词失败！" << std::endl;
-//         RimeDestroySession(session);
-//         RimeFinalize();
-//         return;
-//     }
-//     do
-//     {
-//         //if (iterator->candidate && iterator->candidate.text) {  // 防空指针
-//             candidates.push_back(std::string(iterator.candidate.text));
-//         //}
-//     } while (RimeCandidateListNext(&iterator));
-//
-//     // 输出候选词
-//     std::cout << "候选词列表：\n";
-//     if (candidates.empty()) {
-//         std::cout << "  （无候选词）\n";
-//     } else {
-//         for (size_t i = 0; i < candidates.size(); ++i) {
-//             std::cout << "  " << i+1 << ". " << candidates[i] << "\n";
-//         }
-//     }
-//
-//     // ===================== 7. 清理资源 =====================
-//     RimeDestroySession(session);
-//     RimeFinalize();
-//     std::cout << "\n✅ RIME 引擎已关闭\n";
-// }
+RimeSessionId ensure_session(RimeApi* rime) {
+    RimeSessionId id = rime->create_session();
+    if (!id) {
+        fprintf(stderr, "Error creating rime session.\n");
+    }
+    return id;
+}
+
+void print_status(RimeStatus* status) {
+    printf("schema: %s / %s\n", status->schema_id, status->schema_name);
+    printf("status: ");
+    if (status->is_disabled)
+        printf("disabled ");
+    if (status->is_composing)
+        printf("composing ");
+    if (status->is_ascii_mode)
+        printf("ascii ");
+    if (status->is_full_shape)
+        printf("full_shape ");
+    if (status->is_simplified)
+        printf("simplified ");
+    printf("\n");
+}
+
+void print_composition(RimeComposition* composition) {
+    const char* preedit = composition->preedit;
+    if (!preedit)
+        return;
+    size_t len = strlen(preedit);
+    size_t start = composition->sel_start;
+    size_t end = composition->sel_end;
+    size_t cursor = composition->cursor_pos;
+    for (size_t i = 0; i <= len; ++i) {
+        if (start < end) {
+            if (i == start) {
+                putchar('[');
+            } else if (i == end) {
+                putchar(']');
+            }
+        }
+        if (i == cursor)
+            putchar('|');
+        if (i < len)
+            putchar(preedit[i]);
+    }
+    printf("\n");
+}
+
+void print_menu(RimeMenu* menu) {
+    if (menu->num_candidates == 0)
+        return;
+    printf("page: %d%c (of size %d)\n", menu->page_no + 1,
+           menu->is_last_page ? '$' : ' ', menu->page_size);
+    for (int i = 0; i < menu->num_candidates; ++i) {
+        bool highlighted = i == menu->highlighted_candidate_index;
+        printf("%d. %c%s%c%s\n", i + 1, highlighted ? '[' : ' ',
+               menu->candidates[i].text, highlighted ? ']' : ' ',
+               menu->candidates[i].comment ? menu->candidates[i].comment : "");
+    }
+}
+
+void print_context(RimeContext* context) {
+    if (context->composition.length > 0 || context->menu.num_candidates > 0) {
+        print_composition(&context->composition);
+    } else {
+        printf("(not composing)\n");
+    }
+    print_menu(&context->menu);
+}
+
+void print(RimeSessionId session_id) {
+    RimeApi* rime = rime_get_api();
+
+    RIME_STRUCT(RimeCommit, commit);
+    RIME_STRUCT(RimeStatus, status);
+    RIME_STRUCT(RimeContext, context);
+
+    if (rime->get_commit(session_id, &commit)) {
+        printf("commit: %s\n", commit.text);
+        rime->free_commit(&commit);
+    }
+
+    if (rime->get_status(session_id, &status)) {
+        print_status(&status);
+        rime->free_status(&status);
+    }
+
+    if (rime->get_context(session_id, &context)) {
+        print_context(&context);
+        rime->free_context(&context);
+    }
+}
 
 int main(int argc, char* argv[]) {
 
-    test();
-    return 0;
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <input>\n", argv[0]);
+        return 1;
+    }
+    std::string input = argv[1];
+    RimeApi* rime = rime_get_api();
+
+    RIME_STRUCT(RimeTraits, traits);
+    traits.app_name = "rime.console";
+    rime->setup(&traits);
+
+    rime->set_notification_handler(&on_message, NULL);
+
+    fprintf(stderr, "initializing...\n");
+[[maybe_unused]] reload:
+
+    rime->initialize(NULL);
+    Bool full_check = True;
+    if (rime->start_maintenance(full_check))
+        rime->join_maintenance_thread();
+    fprintf(stderr, "ready.\n");
+
+    RimeSessionId session_id = 0;
+    if (!rime->find_session(session_id) &&
+        !(session_id = ensure_session(rime))) {
+        fprintf(stderr, "can not get session.\n");
+        return 1;
+    }
+
+    if (rime->simulate_key_sequence(session_id, input.c_str())) {
+        print(session_id);
+    }
+
 }
