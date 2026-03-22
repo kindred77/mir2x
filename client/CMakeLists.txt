@@ -7,8 +7,6 @@ SET(IMGUI_SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdlrenderer2.cpp)
 
-ADD_SUBDIRECTORY(src)
-
 ADD_EXECUTABLE(IMETest
         IMETest.cpp
         ${IMGUI_SOURCE}
@@ -68,13 +66,16 @@ TARGET_LINK_LIBRARIES(RIMETest
 #        $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
 #        $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
         ${RIME_LIBRARIES}
-        glog::glog
-        leveldb
-        marisa
-        opencc
-        yaml-cpp
 )
 IF(WIN32 AND NOT MSVC)
     TARGET_LINK_LIBRARIES(RIMETest ws2_32 dbghelp)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
 ENDIF()
+
+IF(MIR2X_BUILD_LIBRIME)
+    ADD_COMPILE_DEFINITIONS(
+            USE_LIBRIME
+    )
+ENDIF ()
+
+ADD_SUBDIRECTORY(src)

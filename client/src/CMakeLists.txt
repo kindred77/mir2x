@@ -55,7 +55,7 @@ TARGET_LINK_LIBRARIES(client
     ${LZ4_LIBRARIES}
     ${ZSTD_LIBRARIES}
 #    ${LIBPINYIN_LIBRARIES}
-
+    ${RIME_LIBRARIES}
     Threads::Threads
     -static-libstdc++
 )
