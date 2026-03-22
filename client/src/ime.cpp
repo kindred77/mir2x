@@ -182,8 +182,6 @@ struct _IME_Instance final
     // we skip the training and saving if input is incomplete
     bool is_input_complete_pinyin()
     {
-        size_t i = 0;
-
         return true;
     }
 };
