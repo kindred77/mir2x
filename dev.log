@@ -66,4 +66,12 @@ pacman -S mingw64/mingw-w64-x86_64-marisa
 pacman -S mingw64/mingw-w64-x86_64-librime mingw64/mingw-w64-x86_64-librime-data
 pacman -Ql mingw64/mingw-w64-x86_64-librime
 rime也可以用mingw编译安装:
-cmake -G"Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/mywork/projects/cpp/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-static -DCMAKE_INSTALL_PREFIX=c:/mywork/projects/cpp/librime/install -DBUILD_TEST=OFF -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC=ON ..
+git clone git@github.com:kindred77/librime.git -b mingw_vcpkg_static
+vcpkg install glog --triplet=x64-mingw-static
+vcpkg install leveldb --triplet=x64-mingw-static
+vcpkg install yaml-cpp --triplet=x64-mingw-static
+vcpkg install googletest --triplet=x64-mingw-static
+vcpkg install marisa-trie --triplet=x64-mingw-static
+vcpkg install OpenCC --triplet=x64-mingw-static 1.1.9安装失败，升级到1.2.0，并且去掉enable-cpp17.patch这个补丁.
+vcpkg install OpenCC --triplet=x64-mingw-static --editable
+cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/mywork/projects/cpp/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-static -DCMAKE_INSTALL_PREFIX=c:/mywork/projects/cpp/librime/install -DBUILD_TEST=OFF -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC=ON -DENABLE_LOGGING=FALSE ..

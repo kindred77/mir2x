@@ -31,8 +31,8 @@ IF(WIN32 AND NOT MSVC)
 ENDIF()
 
 #PKG_CHECK_MODULES(RIME REQUIRED rime)
-SET(RIME_INCLUDE_DIRS "/home/kindred/mywork/projects/cpp/librime/install/include")
-SET(RIME_LIBRARY_DIRS "/home/kindred/mywork/projects/cpp/librime/install/lib")
+SET(RIME_INCLUDE_DIRS "c:/mywork/projects/cpp/librime/install/include")
+SET(RIME_LIBRARY_DIRS "c:/mywork/projects/cpp/librime/install/lib")
 SET(RIME_LIBRARIES "rime")
 LINK_DIRECTORIES(${RIME_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(SYSTEM ${RIME_INCLUDE_DIRS})
@@ -45,15 +45,22 @@ ADD_EXECUTABLE(RIMETest
 ADD_DEPENDENCIES(RIMETest mir2x_3rds)
 TARGET_INCLUDE_DIRECTORIES(IMETest PRIVATE ${Rime_INCLUDE_DIR})
 
-#FIND_PACKAGE(glog REQUIRED)
-#LINK_DIRECTORIES(${GLOG_LIBRARY_DIRS})
+FIND_PACKAGE(glog REQUIRED)
+SET(RIME_LIBRARIES ${RIME_LIBRARIES} glog::glog)
 
-#FIND_PACKAGE(leveldb REQUIRED)
-#LINK_DIRECTORIES(${LEVELEDDB_LIBRARY_DIRS})
+FIND_PACKAGE(leveldb REQUIRED)
+SET(RIME_LIBRARIES ${RIME_LIBRARIES} leveldb)
 
-#FIND_PACKAGE(marisa REQUIRED)
-#LINK_DIRECTORIES(${MARISA_LIBRARY_DIRS})
+FIND_PACKAGE(marisa REQUIRED)
+SET(RIME_LIBRARIES ${RIME_LIBRARIES} marisa)
 
+FIND_PACKAGE(opencc REQUIRED)
+SET(RIME_LIBRARIES ${RIME_LIBRARIES} opencc)
+
+FIND_PACKAGE(yaml-cpp REQUIRED)
+SET(RIME_LIBRARIES ${RIME_LIBRARIES} yaml-cpp)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static")
 TARGET_LINK_LIBRARIES(RIMETest
 #        ${SDL2_LIBRARIES}
 #        $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
@@ -61,9 +68,11 @@ TARGET_LINK_LIBRARIES(RIMETest
 #        $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
 #        $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
         ${RIME_LIBRARIES}
-#        glog::glog
-#        leveldb::leveldb
-#        marisa::marisa
+        glog::glog
+        leveldb
+        marisa
+        opencc
+        yaml-cpp
 )
 IF(WIN32 AND NOT MSVC)
     TARGET_LINK_LIBRARIES(RIMETest ws2_32 dbghelp)
