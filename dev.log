@@ -75,3 +75,5 @@ vcpkg install marisa-trie --triplet=x64-mingw-static
 vcpkg install OpenCC --triplet=x64-mingw-static 1.1.9安装失败，升级到1.2.0，并且去掉enable-cpp17.patch这个补丁.
 vcpkg install OpenCC --triplet=x64-mingw-static --editable
 cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/mywork/projects/cpp/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-static -DCMAKE_INSTALL_PREFIX=c:/mywork/projects/cpp/librime/install -DBUILD_TEST=OFF -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC=ON -DENABLE_LOGGING=FALSE ..
+
+建议还是编译成动态链接库
