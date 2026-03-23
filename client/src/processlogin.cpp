@@ -12,6 +12,7 @@
 #include "notifyboard.hpp"
 #include "processlogin.hpp"
 #include "clientargparser.hpp"
+#include "imeboard.hpp"
 
 extern Log *g_log;
 extern Client *g_client;
@@ -19,6 +20,7 @@ extern PNGTexDB *g_progUseDB;
 extern SDLDevice *g_sdlDevice;
 extern BGMusicDB *g_bgmDB;
 extern ClientArgParser *g_clientArgParser;
+extern IMEBoard *g_imeBoard;
 
 ProcessLogin::ProcessLogin()
 	: Process()
@@ -152,6 +154,9 @@ ProcessLogin::ProcessLogin()
 void ProcessLogin::update(double fUpdateTime)
 {
     m_canvas.update(fUpdateTime);
+    if(!g_clientArgParser->disableIME){
+        g_imeBoard->update(fUpdateTime);
+    }
 }
 
 void ProcessLogin::draw() const
@@ -160,12 +165,18 @@ void ProcessLogin::draw() const
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000003),   0,  75);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000004),   0, 465);
     g_sdlDevice->drawTexture(g_progUseDB->retrieve(0X00000011), 103, 536);
-
+    if(!g_clientArgParser->disableIME){
+        g_imeBoard->drawRoot({});
+    }
     m_canvas.drawRoot({});
 }
 
 void ProcessLogin::processEvent(const SDL_Event &event)
 {
+    bool tookEvent = false;
+    if(!g_clientArgParser->disableIME){
+        tookEvent |= g_imeBoard->processEventRoot(event, !tookEvent, {});
+    }
     switch(event.type){
         case SDL_KEYDOWN:
             {

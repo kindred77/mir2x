@@ -87,7 +87,7 @@ struct _IME_Instance final
         fflassert(session_id);
 
         done = false;
-        th = std::thread([this, &session_id]()
+        th = std::thread([this, session_id]()
         {
             while(!done){
                 std::unique_lock<std::mutex> lock(mtx);
@@ -149,27 +149,50 @@ struct _IME_Instance final
                         RIME_STRUCT(RimeCommit, commit);
                         RIME_STRUCT(RimeStatus, status);
                         RIME_STRUCT(RimeContext, context);
+
+                        if (rime->get_commit(session_id, &commit)) {
+                            printf("commit: %s\n", commit.text);
+                            rime->free_commit(&commit);
+                        }
+
+                        if (rime->get_status(session_id, &status)) {
+                            //print_status(&status);
+                            rime->free_status(&status);
+                        }
+
                         if (rime->get_context(session_id, &context)) {
                             if (context.composition.length > 0 || context.menu.num_candidates > 0) {
-                                const char* preedit = context.composition.preedit;
-                                if (!preedit)
+                                // const char* preedit = context.composition.preedit;
+                                // if (!preedit)
+                                //     return;
+                                // size_t len = strlen(preedit);
+                                // size_t start = context.composition.sel_start;
+                                // size_t end = context.composition.sel_end;
+                                // size_t cursor = context.composition.cursor_pos;
+                                // for (size_t i = 0; i <= len; ++i) {
+                                //     if (start < end) {
+                                //         if (i == start) {
+                                //             putchar('[');
+                                //         } else if (i == end) {
+                                //             putchar(']');
+                                //         }
+                                //     }
+                                //     if (i == cursor)
+                                //         putchar('|');
+                                //     if (i < len)
+                                //         candidates.emplace_back(preedit);
+                                // }
+
+                                if (context.menu.num_candidates == 0)
                                     return;
-                                size_t len = strlen(preedit);
-                                size_t start = context.composition.sel_start;
-                                size_t end = context.composition.sel_end;
-                                size_t cursor = context.composition.cursor_pos;
-                                for (size_t i = 0; i <= len; ++i) {
-                                    if (start < end) {
-                                        if (i == start) {
-                                            putchar('[');
-                                        } else if (i == end) {
-                                            putchar(']');
-                                        }
-                                    }
-                                    if (i == cursor)
-                                        putchar('|');
-                                    if (i < len)
-                                        candidates.emplace_back(preedit);
+                                printf("page: %d%c (of size %d)\n", context.menu.page_no + 1,
+                                       context.menu.is_last_page ? '$' : ' ', context.menu.page_size);
+                                for (int i = 0; i < context.menu.num_candidates; ++i) {
+                                    bool highlighted = i == context.menu.highlighted_candidate_index;
+                                    printf("%d. %c%s%c%s\n", i + 1, highlighted ? '[' : ' ',
+                                           context.menu.candidates[i].text, highlighted ? ']' : ' ',
+                                           context.menu.candidates[i].comment ? context.menu.candidates[i].comment : "");
+                                    candidates.emplace_back(context.menu.candidates[i].text);
                                 }
                             }
                             rime->free_context(&context);
