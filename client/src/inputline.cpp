@@ -123,6 +123,7 @@ bool InputLine::processEventDefault(const SDL_Event &event, bool valid, Widget::
                         {
                             const char keyChar = SDLDeviceHelper::getKeyChar(event, true);
                             if(!g_clientArgParser->disableIME && Widget::evalBool(m_imeEnabled, this) && g_imeBoard->active() && (keyChar >= 'a' && keyChar <= 'z')){
+                                g_imeBoard->moveTo(m.x, m.y);
                                 g_imeBoard->gainFocus("", str_printf("%c", keyChar), this, [this](std::string s)
                                 {
                                     m_tpset.insertUTF8String(m_cursor, 0, s.c_str());

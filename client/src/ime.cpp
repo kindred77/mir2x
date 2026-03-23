@@ -73,30 +73,40 @@ struct _IME_Instance final
         traits.app_name = "rime.console";
         rime->setup(&traits);
         rime->set_notification_handler(&on_message, NULL);
-        rime->initialize(NULL);
-        Bool full_check = True;
-        if (rime->start_maintenance(full_check))
-            rime->join_maintenance_thread();
-
-        RimeSessionId session_id = 0;
-        if (!rime->find_session(session_id) &&
-            !(session_id = ensure_session(rime))) {
-            fprintf(stderr, "can not get session.\n");
-        }
-
-        fflassert(session_id);
 
         done = false;
-        th = std::thread([this, session_id]()
+        th = std::thread([this]()
         {
             while(!done){
                 std::unique_lock<std::mutex> lock(mtx);
                 cond.wait(lock);
 
                 RimeApi* rime = rime_get_api();
-                if(done || rime->is_maintenance_mode()){
+                if(done){
                     return;
                 }
+
+                rime->initialize(NULL);
+                Bool full_check = True;
+                if (rime->start_maintenance(full_check))
+                    rime->join_maintenance_thread();
+
+                RimeSessionId session_id = 0;
+                if (!rime->find_session(session_id) &&
+                    !(session_id = ensure_session(rime))) {
+                    fprintf(stderr, "can not get session.\n");
+                }
+
+                fflassert(session_id);
+
+                struct on_scope_exit {
+                    RimeApi* rime_ptr;
+                    RimeSessionId session;
+                    ~on_scope_exit() {
+                        rime_ptr->destroy_session(session);
+                        rime_ptr->finalize();
+                    }
+                } remove_on_exit{rime, session_id};
 
                 if(input.empty()){
                     prefix.clear();
