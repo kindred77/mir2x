@@ -148,7 +148,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (rime->simulate_key_sequence(session_id, input.c_str())) {
+    RimeApi* rime2 = rime_get_api();
+    if (rime2->simulate_key_sequence(session_id, input.c_str())) {
         print(session_id);
     }
 

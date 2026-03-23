@@ -63,11 +63,13 @@ struct _IME_Instance final
 //    pinyin_context_t *context;
 //    pinyin_instance_t *instance;
 
+    RimeTraits traits{0};
+
     _IME_Instance()
     {
         RimeApi* rime = rime_get_api();
 
-        RIME_STRUCT(RimeTraits, traits);
+        RIME_STRUCT_INIT(RimeTraits, traits);
         traits.app_name = "rime.console";
         rime->setup(&traits);
         rime->set_notification_handler(&on_message, NULL);
@@ -85,13 +87,14 @@ struct _IME_Instance final
         fflassert(session_id);
 
         done = false;
-        th = std::thread([this]()
+        th = std::thread([this, &session_id]()
         {
             while(!done){
                 std::unique_lock<std::mutex> lock(mtx);
                 cond.wait(lock);
 
-                if(done){
+                RimeApi* rime = rime_get_api();
+                if(done || rime->is_maintenance_mode()){
                     return;
                 }
 
@@ -104,44 +107,75 @@ struct _IME_Instance final
                     continue;
                 }
 
-                // if(selection.has_value()){
-                //     uint num = 0;
-                //     pinyin_get_n_candidate(instance, &num);
-                //
-                //     if (selection.value() >= num)
-                //     {
-                //         selection.reset();
-                //         continue;
-                //     }
-                //
-                //     const auto choice = selection.value();
-                //     selection.reset();
-                //
-                //     lookup_candidate_t *candidate = nullptr;
-                //     pinyin_get_candidate(instance, choice, &candidate);
-                //
-                //     const char *word = nullptr;
-                //     pinyin_get_candidate_string(instance, candidate, &word);
-                //
-                //     lookup_candidate_type_t type;
-                //     pinyin_get_candidate_type(instance, candidate, &type);
-                //
-                //      const auto [sentence, offset] = [type, word, this]() -> std::pair<std::string, size_t>
-                //      {
-                //          if((type == NBEST_MATCH_CANDIDATE) || stk.empty()){
-                //              return {word, 0};
-                //          }
-                //          else{
-                //              return {stk.back().first + word, to_uz(stk.back().second)};
-                //          }
-                //      }();
-                //
-                //      stk.emplace_back(sentence, pinyin_choose_candidate(instance, offset, candidate));
-                // }
-                // else if(stk.empty()){
-                //     pinyin_parse_more_full_pinyins(instance, input.c_str());
-                //     pinyin_guess_sentence_with_prefix(instance, prefix.c_str());
-                // }
+                if(selection.has_value()) {
+                    //     uint num = 0;
+                    //     pinyin_get_n_candidate(instance, &num);
+                    //
+                    //     if (selection.value() >= num)
+                    //     {
+                    //         selection.reset();
+                    //         continue;
+                    //     }
+                    //
+                    //     const auto choice = selection.value();
+                    //     selection.reset();
+                    //
+                    //     lookup_candidate_t *candidate = nullptr;
+                    //     pinyin_get_candidate(instance, choice, &candidate);
+                    //
+                    //     const char *word = nullptr;
+                    //     pinyin_get_candidate_string(instance, candidate, &word);
+                    //
+                    //     lookup_candidate_type_t type;
+                    //     pinyin_get_candidate_type(instance, candidate, &type);
+                    //
+                    //      const auto [sentence, offset] = [type, word, this]() -> std::pair<std::string, size_t>
+                    //      {
+                    //          if((type == NBEST_MATCH_CANDIDATE) || stk.empty()){
+                    //              return {word, 0};
+                    //          }
+                    //          else{
+                    //              return {stk.back().first + word, to_uz(stk.back().second)};
+                    //          }
+                    //      }();
+                    //
+                    //      stk.emplace_back(sentence, pinyin_choose_candidate(instance, offset, candidate));
+                    // }
+                } else if(stk.empty()){
+                    //pinyin_parse_more_full_pinyins(instance, input.c_str());
+                    //pinyin_guess_sentence_with_prefix(instance, prefix.c_str());
+
+                    if (rime->simulate_key_sequence(session_id, input.c_str())) {
+                        RIME_STRUCT(RimeCommit, commit);
+                        RIME_STRUCT(RimeStatus, status);
+                        RIME_STRUCT(RimeContext, context);
+                        if (rime->get_context(session_id, &context)) {
+                            if (context.composition.length > 0 || context.menu.num_candidates > 0) {
+                                const char* preedit = context.composition.preedit;
+                                if (!preedit)
+                                    return;
+                                size_t len = strlen(preedit);
+                                size_t start = context.composition.sel_start;
+                                size_t end = context.composition.sel_end;
+                                size_t cursor = context.composition.cursor_pos;
+                                for (size_t i = 0; i <= len; ++i) {
+                                    if (start < end) {
+                                        if (i == start) {
+                                            putchar('[');
+                                        } else if (i == end) {
+                                            putchar(']');
+                                        }
+                                    }
+                                    if (i == cursor)
+                                        putchar('|');
+                                    if (i < len)
+                                        candidates.emplace_back(preedit);
+                                }
+                            }
+                            rime->free_context(&context);
+                        }
+                    }
+                }
                 //
                 // candidates.clear();
                 // pinyin_guess_candidates(instance, stk.empty() ? 0 : stk.back().second, SORT_BY_PHRASE_LENGTH_AND_PINYIN_LENGTH_AND_FREQUENCY);
