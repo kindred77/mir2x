@@ -74,9 +74,21 @@ struct _IME_Instance final
         rime->setup(&traits);
         rime->set_notification_handler(&on_message, NULL);
 
+        rime->initialize(NULL);
+        Bool full_check = True;
+        if (rime->start_maintenance(full_check))
+            rime->join_maintenance_thread();
+
         done = false;
         th = std::thread([this]()
         {
+            struct on_scope_exit1 {
+                ~on_scope_exit1() {
+                    RimeApi* rime = rime_get_api();
+                    rime->finalize();
+                }
+            } remove_rime_on_exit{};
+
             while(!done){
                 std::unique_lock<std::mutex> lock(mtx);
                 cond.wait(lock);
@@ -85,11 +97,6 @@ struct _IME_Instance final
                 if(done){
                     return;
                 }
-
-                rime->initialize(NULL);
-                Bool full_check = True;
-                if (rime->start_maintenance(full_check))
-                    rime->join_maintenance_thread();
 
                 RimeSessionId session_id = 0;
                 if (!rime->find_session(session_id) &&
@@ -104,7 +111,7 @@ struct _IME_Instance final
                     RimeSessionId session;
                     ~on_scope_exit() {
                         rime_ptr->destroy_session(session);
-                        rime_ptr->finalize();
+                        //rime_ptr->finalize();
                     }
                 } remove_on_exit{rime, session_id};
 
